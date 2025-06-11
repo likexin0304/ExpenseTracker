@@ -1,27 +1,56 @@
 import Foundation
 import Combine
 
+/// 详细错误响应模型
+struct DetailedErrorResponse: Codable {
+    let success: Bool
+    let message: String
+    let error: ErrorDetails?
+    let help: HelpInfo?
+}
+
+/// 错误详情模型
+struct ErrorDetails: Codable {
+    let type: String?
+    let details: String?
+    let suggestions: [String]?
+    let receivedBody: String?
+}
+
+/// 帮助信息模型
+struct HelpInfo: Codable {
+    let correctFormat: String?
+    let example: String?
+    let documentation: String?
+}
+
 class NetworkManager: ObservableObject {
     static let shared = NetworkManager()
     private let session = URLSession.shared
     
     private init() {
         print("🌐 NetworkManager初始化")
+        APIConfig.debugInfo()
     }
     
+    // MARK: - 主要请求方法
     func request<T: Codable>(
         endpoint: String,
         method: HTTPMethod = .GET,
-        body: Data? = nil,
-        headers: [String: String] = [:],
+        headers: [String: String]? = nil,
+        queryItems: [URLQueryItem]? = nil,
+        body: Codable? = nil,
         responseType: T.Type
-    ) -> AnyPublisher<APIResponse<T>, NetworkError> {
+    ) -> AnyPublisher<T, NetworkError> {
         
-        let fullURL = APIConfig.baseURL + endpoint
-        print("🌐 准备网络请求: \(method.rawValue) \(fullURL)")
+        // ✅ 构建完整URL，使用APIConfig.fullURL
+        var urlComponents = URLComponents(string: APIConfig.fullURL(for: endpoint))
+        if let queryItems = queryItems, !queryItems.isEmpty {
+            urlComponents?.queryItems = queryItems
+        }
         
-        guard let url = URL(string: fullURL) else {
-            print("❌ 无效URL: \(fullURL)")
+        guard let url = urlComponents?.url else {
+            print("❌ 无效URL: \(APIConfig.fullURL(for: endpoint))")
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
@@ -32,203 +61,133 @@ class NetworkManager: ObservableObject {
         
         // 设置默认headers
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        print("📋 默认请求头: Content-Type = application/json")
         
         // 添加自定义headers
-        for (key, value) in headers {
-            request.setValue(value, forHTTPHeaderField: key)
-            // 只打印Authorization的前缀，保护完整token
-            if key == "Authorization" {
-                let tokenPreview = value.count > 20 ? String(value.prefix(20)) + "..." : value
-                print("📋 请求头: \(key) = \(tokenPreview)")
-            } else {
-                print("📋 请求头: \(key) = \(value)")
+        if let headers = headers {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
             }
+        }
+        
+        // 添加认证token
+        if let token = getStoredToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
         // 设置body
         if let body = body {
-            request.httpBody = body
-            print("📦 请求体大小: \(body.count) bytes")
+            do {
+                request.httpBody = try JSONEncoder().encode(body)
+                print("📦 请求体已编码")
+            } catch {
+                print("❌ 请求体编码失败: \(error)")
+                return Fail(error: NetworkError.decodingError)
+                    .eraseToAnyPublisher()
+            }
         }
         
-        print("🚀 发起网络请求...")
+        print("🚀 发起网络请求: \(method.rawValue) \(url)")
+        print("📋 请求头: \(request.allHTTPHeaderFields ?? [:])")
+        if let bodyData = request.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
+            print("📦 请求体: \(bodyString)")
+        }
         
         return session.dataTaskPublisher(for: request)
             .map { data, response -> Data in
-                // 打印响应状态
                 if let httpResponse = response as? HTTPURLResponse {
                     print("📡 响应状态码: \(httpResponse.statusCode)")
-                    
-                    // 打印响应头（调试用）
-                    if httpResponse.statusCode >= 400 {
-                        print("📋 响应头: \(httpResponse.allHeaderFields)")
-                    }
-                } else {
-                    print("📡 非HTTP响应")
+                    print("📋 响应头: \(httpResponse.allHeaderFields)")
                 }
-                
-                print("📦 响应数据大小: \(data.count) bytes")
-                
-                // 打印响应内容（用于调试）
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("📄 完整响应: \(responseString)")
+                    print("📥 响应数据: \(responseString)")
                 }
-                
                 return data
             }
-            .tryMap { data -> APIResponse<T> in
-                // 使用智能JSON解析
-                return try self.parseAPIResponse(data: data, responseType: T.self)
-            }
-            .mapError { error -> NetworkError in
-                print("❌ 网络请求失败: \(error)")
+            .tryMap { data -> T in
+                // 首先尝试解析为统一API响应格式
+                if let apiResponse = try? JSONDecoder().decode(APIResponse<T>.self, from: data) {
+                    if apiResponse.success {
+                        return apiResponse.data
+                    } else {
+                        // 处理后端返回的业务错误
+                        throw NetworkError.serverError(apiResponse.message ?? "未知错误")
+                    }
+                }
                 
-                if let networkError = error as? NetworkError {
-                    return networkError
-                } else if let decodingError = error as? DecodingError {
-                    print("❌ JSON解析错误详情: \(decodingError)")
+                // 如果不是统一格式，尝试直接解析目标类型
+                do {
+                    return try JSONDecoder().decode(T.self, from: data)
+                } catch {
+                    print("❌ JSON解析失败: \(error)")
                     
-                    // 详细的解析错误信息
-                    switch decodingError {
-                    case .keyNotFound(let key, let context):
-                        print("❌ 缺少字段: \(key.stringValue)")
-                        print("❌ 上下文: \(context.debugDescription)")
-                        print("❌ 路径: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))")
-                    case .typeMismatch(let type, let context):
-                        print("❌ 类型不匹配: 期望\(type)")
-                        print("❌ 上下文: \(context.debugDescription)")
-                    case .valueNotFound(let type, let context):
-                        print("❌ 值不存在: 期望\(type)")
-                        print("❌ 上下文: \(context.debugDescription)")
-                    case .dataCorrupted(let context):
-                        print("❌ 数据损坏: \(context.debugDescription)")
-                    @unknown default:
-                        print("❌ 未知解析错误")
+                    // 尝试解析详细错误信息
+                    if let errorResponse = try? JSONDecoder().decode(DetailedErrorResponse.self, from: data) {
+                        var errorMessage = errorResponse.message
+                        
+                        // 如果有详细的建议信息，添加到错误消息中
+                        if let suggestions = errorResponse.error?.suggestions {
+                            errorMessage += "\n建议：\(suggestions.joined(separator: "；"))"
+                        }
+                        
+                        throw NetworkError.serverError(errorMessage)
                     }
                     
+                    throw NetworkError.decodingError
+                }
+            }
+            .mapError { error in
+                print("❌ 网络请求失败: \(error)")
+                if let networkError = error as? NetworkError {
+                    return networkError
+                } else if error is DecodingError {
                     return NetworkError.decodingError
-                } else if let urlError = error as? URLError {
-                    print("❌ URL错误: \(urlError.localizedDescription)")
-                    return NetworkError.networkError(urlError)
                 } else {
-                    print("❌ 其他网络错误: \(error)")
                     return NetworkError.networkError(error)
                 }
             }
-            .handleEvents(
-                receiveSubscription: { _ in
-                    print("🔄 网络请求已开始...")
-                },
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("✅ 网络请求成功完成")
-                    case .failure(let error):
-                        print("❌ 网络请求失败: \(error.localizedDescription)")
-                    }
-                },
-                receiveCancel: {
-                    print("🚫 网络请求被取消")
-                }
-            )
             .eraseToAnyPublisher()
     }
     
-    // MARK: - 私有方法
+    // MARK: - 便捷方法重载
     
-    /**
-     * 智能解析API响应
-     * 能够处理有message和无message的不同响应格式
-     */
-    private func parseAPIResponse<T: Codable>(data: Data, responseType: T.Type) throws -> APIResponse<T> {
-        let decoder = JSONDecoder()
-        
-        // 首先尝试标准的APIResponse格式（带message字段）
-        if let standardResponse = try? decoder.decode(APIResponse<T>.self, from: data) {
-            print("✅ 使用标准APIResponse格式解析成功")
-            return standardResponse
-        }
-        
-        print("⚠️ 标准格式解析失败，尝试智能解析...")
-        
-        // 如果标准格式失败，尝试手动解析JSON
-        do {
-            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            
-            guard let jsonDict = json else {
-                print("❌ 无法解析为JSON字典")
-                throw NetworkError.decodingError
-            }
-            
-            print("📋 JSON字典keys: \(jsonDict.keys.sorted())")
-            
-            // 提取基础字段
-            let success = jsonDict["success"] as? Bool ?? false
-            let message = jsonDict["message"] as? String // 可选字段
-            
-            print("📊 解析结果: success=\(success), message=\(message ?? "无")")
-            
-            // 尝试解析data字段
-            var responseData: T? = nil
-            if let dataJson = jsonDict["data"] {
-                print("📦 找到data字段，尝试解析...")
-                let dataJsonData = try JSONSerialization.data(withJSONObject: dataJson, options: [])
-                responseData = try decoder.decode(T.self, from: dataJsonData)
-                print("✅ data字段解析成功")
-            } else {
-                print("⚠️ 未找到data字段")
-            }
-            
-            let response = APIResponse<T>(success: success, message: message, data: responseData)
-            print("✅ 智能解析成功")
-            return response
-            
-        } catch let jsonError {
-            print("❌ 智能解析失败: \(jsonError)")
-            throw NetworkError.decodingError
-        }
-    }
-}
-
-// MARK: - NetworkManager扩展方法
-extension NetworkManager {
-    /**
-     * 用于调试的方法：打印请求详情
-     */
-    private func debugRequest(_ request: URLRequest) {
-        print("🔍 === 请求详情 ===")
-        print("🔍 URL: \(request.url?.absoluteString ?? "无")")
-        print("🔍 方法: \(request.httpMethod ?? "无")")
-        print("🔍 请求头:")
-        request.allHTTPHeaderFields?.forEach { key, value in
-            if key == "Authorization" {
-                let preview = value.count > 20 ? String(value.prefix(20)) + "..." : value
-                print("🔍   \(key): \(preview)")
-            } else {
-                print("🔍   \(key): \(value)")
-            }
-        }
-        // 🔧 修复：添加了缺失的 data 参数
-        if let body = request.httpBody, let bodyString = String(data: body, encoding: .utf8) {
-            print("🔍 请求体: \(bodyString)")
-        }
-        print("🔍 ==================")
+    // 不带body的GET请求
+    func request<T: Codable>(
+        endpoint: String,
+        method: HTTPMethod = .GET,
+        headers: [String: String]? = nil,
+        queryItems: [URLQueryItem]? = nil,
+        responseType: T.Type
+    ) -> AnyPublisher<T, NetworkError> {
+        return request(
+            endpoint: endpoint,
+            method: method,
+            headers: headers,
+            queryItems: queryItems,
+            body: nil as String?,
+            responseType: responseType
+        )
     }
     
-    /**
-     * 用于调试的方法：打印响应详情
-     */
-    private func debugResponse(data: Data, response: URLResponse?) {
-        print("🔍 === 响应详情 ===")
-        if let httpResponse = response as? HTTPURLResponse {
-            print("🔍 状态码: \(httpResponse.statusCode)")
-            print("🔍 响应头: \(httpResponse.allHeaderFields)")
-        }
-        print("🔍 数据大小: \(data.count) bytes")
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("🔍 响应内容: \(responseString)")
-        }
-        print("🔍 ==================")
+    // 带body的POST/PUT请求
+    func request<T: Codable, B: Codable>(
+        endpoint: String,
+        method: HTTPMethod,
+        headers: [String: String]? = nil,
+        body: B,
+        responseType: T.Type
+    ) -> AnyPublisher<T, NetworkError> {
+        return request(
+            endpoint: endpoint,
+            method: method,
+            headers: headers,
+            queryItems: nil,
+            body: body,
+            responseType: responseType
+        )
+    }
+    
+    // MARK: - Token管理
+    private func getStoredToken() -> String? {
+        return UserDefaults.standard.string(forKey: "auth_token")
     }
 }

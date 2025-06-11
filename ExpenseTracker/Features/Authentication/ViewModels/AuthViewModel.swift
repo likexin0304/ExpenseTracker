@@ -21,8 +21,15 @@ class AuthViewModel: ObservableObject {
     
     // MARK: - 注册
     func register() {
-        guard validateRegistrationInput() else { return }
+        print("🔵 AuthViewModel.register() 被调用")
+        print("📧 邮箱: \(email), 密码长度: \(password.count)")
         
+        guard validateRegistrationInput() else { 
+            print("❌ 注册表单验证失败")
+            return 
+        }
+        
+        print("✅ 注册表单验证通过，开始调用AuthService")
         isLoading = true
         errorMessage = ""
         
@@ -48,8 +55,15 @@ class AuthViewModel: ObservableObject {
     
     // MARK: - 登录
     func login() {
-        guard validateLoginInput() else { return }
+        print("🔵 AuthViewModel.login() 被调用")
+        print("📧 邮箱: \(email), 密码长度: \(password.count)")
         
+        guard validateLoginInput() else { 
+            print("❌ 登录表单验证失败")
+            return 
+        }
+        
+        print("✅ 登录表单验证通过，开始调用AuthService")
         isLoading = true
         errorMessage = ""
         

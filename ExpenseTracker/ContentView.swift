@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine  // ✅ 添加 Combine 导入
 
 /**
  * 应用主视图
@@ -46,7 +47,7 @@ struct MainAppView: View {
                 }
                 .tag(0)
             
-            // 支出记录（待实现）
+            // 支出记录
             ExpenseListView()
                 .tabItem {
                     Image(systemName: selectedTab == 1 ? "list.bullet.clipboard.fill" : "list.bullet.clipboard")
@@ -54,7 +55,7 @@ struct MainAppView: View {
                 }
                 .tag(1)
             
-            // 添加支出（待实现）
+            // 添加支出
             AddExpenseView()
                 .tabItem {
                     Image(systemName: "plus.circle.fill")
@@ -62,8 +63,8 @@ struct MainAppView: View {
                 }
                 .tag(2)
             
-            // 统计分析（待实现）
-            StatisticsView()
+            // 统计分析
+            ExpenseStatsView()
                 .tabItem {
                     Image(systemName: selectedTab == 3 ? "chart.bar.fill" : "chart.bar")
                     Text("统计")
@@ -78,7 +79,7 @@ struct MainAppView: View {
                 }
                 .tag(4)
         }
-        .accentColor(.systemBlue)
+        .accentColor(.blue)
         .onAppear {
             // 配置TabBar外观
             configureTabBarAppearance()
@@ -90,124 +91,70 @@ struct MainAppView: View {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor.systemBackground
-        
         // 设置选中状态的颜色
         appearance.selectionIndicatorTintColor = UIColor.systemBlue
-        
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 
-// MARK: - 临时占位视图（待实现的功能）
-
-/**
- * 支出列表视图（占位符）
- */
-struct ExpenseListView: View {
+// MARK: - 统计分析视图
+struct ExpenseStatsView: View {
+    @StateObject private var statsViewModel = ExpenseStatsViewModel()
+    
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Image(systemName: "list.bullet.clipboard")
-                    .font(.system(size: 80))
-                    .foregroundColor(.systemGray3)
-                
-                VStack(spacing: 8) {
-                    Text("支出记录")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Text("这里将显示您的支出历史记录")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                
-                Text("功能开发中...")
-                    .font(.caption)
-                    .foregroundColor(.systemBlue)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.systemBlue.opacity(0.1))
+            ScrollView {
+                if let statsResponse = statsViewModel.stats {
+                    let expenseStats = ExpenseStats(
+                        categoryStats: [], // 需要转换CategoryStat类型
+                        totalStats: TotalStat(
+                            totalAmount: statsResponse.totalStats.totalAmount,
+                            totalCount: statsResponse.totalStats.totalCount,
+                            avgAmount: statsResponse.totalStats.avgAmount,
+                            maxAmount: statsResponse.totalStats.maxAmount,
+                            minAmount: statsResponse.totalStats.minAmount
+                        ),
+                        periodStats: [] // 需要转换PeriodStat类型
                     )
-            }
-            .navigationTitle("支出记录")
-        }
-    }
-}
-
-/**
- * 添加支出视图（占位符）
- */
-struct AddExpenseView: View {
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Image(systemName: "plus.circle")
-                    .font(.system(size: 80))
-                    .foregroundColor(.systemGray3)
-                
-                VStack(spacing: 8) {
-                    Text("添加支出")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Text("快速记录您的消费支出")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
+                    ExpenseStatsDashboardView(stats: expenseStats)
+                } else if statsViewModel.isLoading {
+                    ProgressView("加载统计数据...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    VStack(spacing: 20) {
+                        Image(systemName: "chart.bar")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                        
+                        VStack(spacing: 8) {
+                            Text("统计分析")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            
+                            Text("查看详细的支出分析和趋势")
+                                .font(.body)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        
+                        Button("刷新数据") {
+                            statsViewModel.loadStats()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding()
                 }
-                
-                Text("功能开发中...")
-                    .font(.caption)
-                    .foregroundColor(.systemBlue)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.systemBlue.opacity(0.1))
-                    )
-            }
-            .navigationTitle("添加支出")
-        }
-    }
-}
-
-/**
- * 统计分析视图（占位符）
- */
-struct StatisticsView: View {
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Image(systemName: "chart.bar")
-                    .font(.system(size: 80))
-                    .foregroundColor(.systemGray3)
-                
-                VStack(spacing: 8) {
-                    Text("统计分析")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Text("查看详细的支出分析和趋势")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                
-                Text("功能开发中...")
-                    .font(.caption)
-                    .foregroundColor(.systemBlue)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.systemBlue.opacity(0.1))
-                    )
             }
             .navigationTitle("统计分析")
+            .navigationBarTitleDisplayMode(.large)
+            .refreshable {
+                statsViewModel.loadStats()
+            }
+        }
+        .onAppear {
+            statsViewModel.loadStats()
         }
     }
 }
@@ -248,12 +195,12 @@ struct SettingsView: View {
             HStack(spacing: 16) {
                 // 用户头像
                 Circle()
-                    .fill(Color.systemBlue.opacity(0.2))
+                    .fill(Color.blue.opacity(0.2))
                     .frame(width: 60, height: 60)
                     .overlay(
                         Image(systemName: "person.fill")
                             .font(.title2)
-                            .foregroundColor(.systemBlue)
+                            .foregroundColor(.blue)
                     )
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -279,7 +226,7 @@ struct SettingsView: View {
         Section {
             HStack {
                 Image(systemName: "chart.pie.fill")
-                    .foregroundColor(.systemBlue)
+                    .foregroundColor(.blue)
                     .frame(width: 24)
                 
                 VStack(alignment: .leading, spacing: 2) {
@@ -301,12 +248,12 @@ struct SettingsView: View {
                 
                 Text(budgetService.hasBudget ? "修改" : "设置")
                     .font(.subheadline)
-                    .foregroundColor(.systemBlue)
+                    .foregroundColor(.blue)
             }
             
             HStack {
                 Image(systemName: "bell.fill")
-                    .foregroundColor(.systemOrange)
+                    .foregroundColor(.orange)
                     .frame(width: 24)
                 
                 Text("预算提醒")
@@ -327,21 +274,21 @@ struct SettingsView: View {
             SettingsRow(
                 icon: "moon.fill",
                 title: "深色模式",
-                color: .systemIndigo,
+                color: .indigo,
                 action: {}
             )
             
             SettingsRow(
                 icon: "globe",
                 title: "语言设置",
-                color: .systemGreen,
+                color: .green,
                 action: {}
             )
             
             SettingsRow(
                 icon: "lock.fill",
                 title: "隐私设置",
-                color: .systemRed,
+                color: .red,
                 action: {}
             )
         } header: {
@@ -355,20 +302,20 @@ struct SettingsView: View {
             SettingsRow(
                 icon: "questionmark.circle.fill",
                 title: "帮助与支持",
-                color: .systemBlue,
+                color: .blue,
                 action: {}
             )
             
             SettingsRow(
                 icon: "star.fill",
                 title: "评价应用",
-                color: .systemYellow,
+                color: .yellow,
                 action: {}
             )
             
             HStack {
                 Image(systemName: "info.circle.fill")
-                    .foregroundColor(.systemGray)
+                    .foregroundColor(.gray)
                     .frame(width: 24)
                 
                 Text("版本")
@@ -391,11 +338,11 @@ struct SettingsView: View {
             }) {
                 HStack {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
-                        .foregroundColor(.systemRed)
+                        .foregroundColor(.red)
                         .frame(width: 24)
                     
                     Text("退出登录")
-                        .foregroundColor(.systemRed)
+                        .foregroundColor(.red)
                     
                     Spacer()
                 }
@@ -433,9 +380,42 @@ struct SettingsRow: View {
     }
 }
 
-// MARK: - 预览
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+// MARK: - 支出统计视图模型
+class ExpenseStatsViewModel: ObservableObject {
+    @Published var stats: ExpenseStatsResponse?
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    
+    private let expenseService: ExpenseServiceProtocol
+    private var cancellables = Set<AnyCancellable>()  // ✅ 现在可以找到 AnyCancellable
+    
+    init(expenseService: ExpenseServiceProtocol = ExpenseService()) {
+        self.expenseService = expenseService
     }
+    
+    func loadStats() {
+        isLoading = true
+        errorMessage = nil
+        
+        // ✅ 调用支出统计接口，传入默认参数
+        expenseService.getExpenseStatistics(startDate: nil, endDate: nil, period: "month")
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    self?.isLoading = false
+                    if case .failure(let error) = completion {
+                        self?.errorMessage = error.localizedDescription
+                    }
+                },
+                receiveValue: { [weak self] stats in
+                    self?.stats = stats
+                }
+            )
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - 预览
+#Preview {
+    ContentView()
 }

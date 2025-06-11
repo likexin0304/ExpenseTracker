@@ -33,11 +33,6 @@ class BudgetService: ObservableObject {
      * @param month 月份（可选，默认当前月份）
      * @returns 返回Void的Publisher，用于处理成功或失败
      */
-    // 在BudgetService.swift中，更新以下方法：
-
-    /**
-     * 设置或更新月度预算
-     */
     func setBudget(amount: Double, year: Int? = nil, month: Int? = nil) -> AnyPublisher<Void, NetworkError> {
         print("💰 开始设置预算: ¥\(amount)")
         
@@ -56,12 +51,6 @@ class BudgetService: ObservableObject {
         
         let request = SetBudgetRequest(amount: amount, year: year, month: month)
         
-        guard let requestData = try? JSONEncoder().encode(request) else {
-            print("❌ 预算请求编码失败")
-            return Fail(error: NetworkError.decodingError)
-                .eraseToAnyPublisher()
-        }
-        
         // 获取认证Token
         guard let token = getAuthToken() else {
             return Fail(error: NetworkError.serverError("用户未登录"))
@@ -73,22 +62,16 @@ class BudgetService: ObservableObject {
         return networkManager.request(
             endpoint: "/budget",
             method: .POST,
-            body: requestData,
             headers: headers,
+            body: request,
             responseType: SetBudgetResponse.self
         )
         .map { [weak self] response in
-            print("📧 设置预算响应: success=\(response.success)")
-            if response.success, let budgetData = response.data {
-                print("✅ 预算设置成功: \(budgetData.budget.formattedAmount)")
-                self?.currentBudget = budgetData.budget
-                
-                // 设置预算后自动刷新统计数据
-                self?.refreshBudgetStatus()
-            } else {
-                let errorMsg = response.message ?? "设置预算失败"
-                print("❌ 设置预算失败: \(errorMsg)")
-            }
+            print("✅ 预算设置成功: \(response.budget.formattedAmount)")
+            self?.currentBudget = response.budget
+            
+            // 设置预算后自动刷新统计数据
+            self?.refreshBudgetStatus()
             return ()
         }
         .eraseToAnyPublisher()
@@ -111,30 +94,27 @@ class BudgetService: ObservableObject {
             endpoint: "/budget/current",
             method: .GET,
             headers: headers,
-            responseType: BudgetStatusResponse.self
+            responseType: BudgetStatusAPIResponse.self
         )
         .map { [weak self] response in
-            print("📧 预算状态响应: success=\(response.success)")
-            if response.success, let statusData = response.data {
-                print("✅ 预算状态获取成功")
-                
-                // 更新当前预算和统计信息
-                self?.currentBudget = statusData.budget
-                self?.currentStatistics = statusData.statistics
-                
-                if let budget = statusData.budget {
-                    print("💰 当前预算: \(budget.formattedAmount)")
-                } else {
-                    print("💰 未设置预算")
-                }
-                
-                let stats = statusData.statistics
-                print("📊 支出统计: 已花费\(stats.formattedTotalExpenses), 使用率\(stats.usagePercentageString)")
-                
+            print("✅ 预算状态获取成功")
+            
+            // 从API响应中提取数据
+            let budgetData = response.data
+            
+            // 更新当前预算和统计信息
+            self?.currentBudget = budgetData.budget
+            self?.currentStatistics = budgetData.statistics
+            
+            if let budget = budgetData.budget {
+                print("💰 当前预算: \(budget.formattedAmount)")
             } else {
-                let errorMsg = response.message ?? "获取预算状态失败"
-                print("❌ 获取预算状态失败: \(errorMsg)")
+                print("💰 未设置预算")
             }
+            
+            let stats = budgetData.statistics
+            print("📊 支出统计: 已花费\(stats.formattedTotalExpenses), 使用率\(stats.usagePercentageString)")
+            
             return ()
         }
         .eraseToAnyPublisher()
@@ -178,23 +158,9 @@ class BudgetService: ObservableObject {
         
         let headers = ["Authorization": "Bearer \(token)"]
         
-        return networkManager.request(
-            endpoint: "/budget/delete/\(budget.id)",
-            method: .DELETE,
-            headers: headers,
-            responseType: EmptyResponse.self
-        )
-        .map { [weak self] response in
-            if response.success {
-                print("✅ 预算删除成功")
-                self?.currentBudget = nil
-                self?.currentStatistics = nil
-            } else {
-                print("❌ 删除预算失败: \(response.message)")
-            }
-            return ()
-        }
-        .eraseToAnyPublisher()
+        // ❌ 注意：根据API文档，后端暂不支持删除预算功能
+        return Fail(error: NetworkError.serverError("删除预算功能暂未实现"))
+            .eraseToAnyPublisher()
     }
     
     // MARK: - 辅助方法

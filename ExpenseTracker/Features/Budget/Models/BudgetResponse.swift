@@ -131,6 +131,20 @@ struct BudgetStatusResponse: Codable {
 }
 
 /**
+ * 预算状态API响应模型（包装后端标准响应格式）
+ */
+struct BudgetStatusAPIResponse: Codable {
+    /// 请求是否成功
+    let success: Bool
+    
+    /// 响应数据
+    let data: BudgetStatusResponse
+    
+    /// 错误消息（可选）
+    let message: String?
+}
+
+/**
  * 预算历史响应模型
  */
 struct BudgetHistoryResponse: Codable {

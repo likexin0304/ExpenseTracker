@@ -13,13 +13,14 @@ struct LoginRequest: Codable {
     let password: String
 }
 
-// 认证响应
-struct AuthResponse: Codable {
+// 认证数据（登录/注册成功后返回的数据）
+struct AuthData: Codable {
     let user: User
     let token: String
 }
 
-// 用户响应
-struct UserResponse: Codable {
-    let user: User
-}
+// 认证响应（登录/注册接口的响应）
+typealias AuthResponse = APIResponse<AuthData>
+
+// 用户响应（获取用户信息接口的响应）
+typealias UserResponse = APIResponse<User>

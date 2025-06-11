@@ -6,6 +6,8 @@ enum NetworkError: Error, LocalizedError {
     case decodingError
     case serverError(String)
     case networkError(Error)
+    case unauthorized
+    case unknown(Error)  // ✅ 添加这个
     
     var errorDescription: String? {
         switch self {
@@ -19,6 +21,10 @@ enum NetworkError: Error, LocalizedError {
             return message
         case .networkError(let error):
             return error.localizedDescription
+        case .unauthorized:
+            return "未授权访问"
+        case .unknown(let error):
+            return "未知错误: \(error.localizedDescription)"
         }
     }
 }

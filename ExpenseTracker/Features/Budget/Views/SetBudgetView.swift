@@ -77,7 +77,7 @@ struct SetBudgetView: View {
         }
         .overlay {
             if viewModel.isLoading {
-                LoadingOverlay()
+                BudgetLoadingOverlay()
             }
         }
     }
@@ -88,7 +88,7 @@ struct SetBudgetView: View {
             // 图标
             Image(systemName: "chart.pie.fill")
                 .font(.system(size: 48))
-                .foregroundColor(.systemBlue)
+                .foregroundColor(.blue)
             
             // 标题和描述
             VStack(spacing: 6) {
@@ -102,7 +102,7 @@ struct SetBudgetView: View {
             }
         }
         .padding(.vertical, 20)
-        .background(Color.systemBackground)
+        .background(Color(.systemBackground))
     }
     
     // MARK: - 当前预算信息
@@ -112,7 +112,6 @@ struct SetBudgetView: View {
                 Text("当前预算")
                     .font(.headline)
                     .fontWeight(.medium)
-                
                 Spacer()
             }
             
@@ -144,7 +143,7 @@ struct SetBudgetView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.secondarySystemBackground)
+                    .fill(Color(.secondarySystemBackground))
             )
         }
     }
@@ -156,7 +155,6 @@ struct SetBudgetView: View {
                 Text("预算金额")
                     .font(.headline)
                     .fontWeight(.medium)
-                
                 Spacer()
             }
             
@@ -179,7 +177,7 @@ struct SetBudgetView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(
-                            viewModel.isBudgetInputValid ? Color.systemBlue : Color.systemGray4,
+                            viewModel.isBudgetInputValid ? Color.blue : Color(.systemGray4),
                             lineWidth: 2
                         )
                 )
@@ -188,11 +186,11 @@ struct SetBudgetView: View {
                 if !viewModel.budgetInputErrorMessage.isEmpty {
                     HStack {
                         Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(.systemRed)
+                            .foregroundColor(.red)
                         
                         Text(viewModel.budgetInputErrorMessage)
                             .font(.caption)
-                            .foregroundColor(.systemRed)
+                            .foregroundColor(.red)
                         
                         Spacer()
                     }
@@ -207,7 +205,7 @@ struct SetBudgetView: View {
             HStack {
                 Image(systemName: "lightbulb.fill")
                     .font(.headline)
-                    .foregroundColor(.systemYellow)
+                    .foregroundColor(.yellow)
                 
                 Text("预算建议")
                     .font(.headline)
@@ -221,27 +219,27 @@ struct SetBudgetView: View {
                     title: "保守型",
                     description: "月收入的30-40%",
                     icon: "shield.fill",
-                    color: .systemGreen
+                    color: .green
                 )
                 
                 BudgetSuggestionRow(
                     title: "平衡型",
                     description: "月收入的50-60%",
                     icon: "scale.3d",
-                    color: .systemBlue
+                    color: .blue
                 )
                 
                 BudgetSuggestionRow(
                     title: "积极型",
                     description: "月收入的70-80%",
                     icon: "flame.fill",
-                    color: .systemOrange
+                    color: .orange
                 )
             }
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.systemYellow.opacity(0.1))
+                    .fill(Color.yellow.opacity(0.1))
             )
         }
     }
@@ -253,7 +251,6 @@ struct SetBudgetView: View {
                 Text("快速选择")
                     .font(.headline)
                     .fontWeight(.medium)
-                
                 Spacer()
             }
             
@@ -327,19 +324,19 @@ struct QuickAmountButton: View {
             .frame(height: 60)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.systemBlue.opacity(0.1))
+                    .fill(Color.blue.opacity(0.1))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.systemBlue.opacity(0.3), lineWidth: 1)
+                    .stroke(Color.blue.opacity(0.3), lineWidth: 1)
             )
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
 
-// MARK: - 加载覆盖层组件
-struct LoadingOverlay: View {
+// MARK: - 预算加载覆盖层组件
+struct BudgetLoadingOverlay: View {
     var body: some View {
         ZStack {
             Color.black.opacity(0.3)
@@ -364,8 +361,6 @@ struct LoadingOverlay: View {
 }
 
 // MARK: - 预览
-struct SetBudgetView_Previews: PreviewProvider {
-    static var previews: some View {
-        SetBudgetView(viewModel: BudgetViewModel())
-    }
+#Preview {
+    SetBudgetView(viewModel: BudgetViewModel())
 }

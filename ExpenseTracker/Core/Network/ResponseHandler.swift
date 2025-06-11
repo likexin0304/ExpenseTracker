@@ -41,7 +41,7 @@ class ResponseHandler {
                 responseData = try? decoder.decode(T.self, from: dataJsonData)
             }
             
-            let response = APIResponse<T>(success: success, message: message, data: responseData)
+            let response = APIResponse<T>(success: success, message: message, data: responseData!)
             return .success(response)
             
         } catch {

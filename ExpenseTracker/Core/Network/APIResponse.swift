@@ -11,13 +11,13 @@ struct APIResponse<T: Codable>: Codable {
     /// 响应消息（可选，某些接口可能不返回）
     let message: String?
     
-    /// 响应数据（可选，某些接口可能不返回数据）
-    let data: T?
+    /// 响应数据（根据API文档，成功时应该有数据）
+    let data: T
     
     /**
      * 初始化方法
      */
-    init(success: Bool, message: String? = nil, data: T? = nil) {
+    init(success: Bool, message: String? = nil, data: T) {
         self.success = success
         self.message = message
         self.data = data
