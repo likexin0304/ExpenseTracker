@@ -1,0 +1,40 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/LoginView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "欢迎回来",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "登录您的记账账户",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "或",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "使用微信登录",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 126
+        }
+      }
+    ]
+  },
+  "version": 1
+}

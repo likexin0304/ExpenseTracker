@@ -1,0 +1,48 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/RegisterView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "创建账户",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "开始您的记账之旅",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "注册即表示您同意我们的服务条款和隐私政策",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "或",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "使用微信注册",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 145
+        }
+      }
+    ]
+  },
+  "version": 1
+}

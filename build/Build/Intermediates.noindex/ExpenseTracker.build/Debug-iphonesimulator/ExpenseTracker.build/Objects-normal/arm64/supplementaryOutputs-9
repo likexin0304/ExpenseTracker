@@ -1,0 +1,24 @@
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Persistence.swift":
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.d"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.swiftdeps"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.dia"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.o"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.swiftconstvalues"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/ContentView.swift":
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.d"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.o"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.swiftdeps"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.swiftconstvalues"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.dia"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Home/Views/HomeView.swift":
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.swiftconstvalues"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.swiftdeps"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.d"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.o"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.dia"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/ExpenseTrackerApp.swift":
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.d"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.o"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.swiftconstvalues"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.dia"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.swiftdeps"

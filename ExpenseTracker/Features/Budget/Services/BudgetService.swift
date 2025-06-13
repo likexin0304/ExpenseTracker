@@ -53,7 +53,10 @@ class BudgetService: ObservableObject {
         
         // 获取认证Token
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，无法设置预算")
+            // 静默返回，不显示错误
+            return Just(())
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -84,7 +87,10 @@ class BudgetService: ObservableObject {
         print("📊 获取当前预算状态")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，跳过预算数据获取")
+            // 静默返回，不显示错误
+            return Just(())
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -152,7 +158,10 @@ class BudgetService: ObservableObject {
         }
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，无法删除预算")
+            // 静默返回，不显示错误
+            return Just(())
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         

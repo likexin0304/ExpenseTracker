@@ -1,0 +1,24 @@
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/ErrorMessageView.swift":
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.o"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.swiftdeps"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.swiftconstvalues"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.d"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.dia"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/LoadingButton.swift":
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.o"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.d"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.swiftdeps"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.dia"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.swiftconstvalues"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/AuthenticationView.swift":
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.swiftconstvalues"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.o"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.d"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.swiftdeps"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.dia"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/LoginView.swift":
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.o"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.swiftdeps"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.d"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.dia"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.swiftconstvalues"

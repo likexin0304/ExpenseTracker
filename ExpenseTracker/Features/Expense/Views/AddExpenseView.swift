@@ -2,10 +2,14 @@ import SwiftUI
 import Combine
 
 struct AddExpenseView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedTab: Int
     @StateObject private var viewModel = AddExpenseViewModel()
     @State private var showingSuccessAlert = false
     @FocusState private var isAmountFocused: Bool
+    @Environment(\.dismiss) private var dismiss
+    
+    // 可选的关闭回调，用于从sheet中调用时
+    var onDismiss: (() -> Void)? = nil
     
     var body: some View {
         NavigationView {
@@ -50,7 +54,7 @@ struct AddExpenseView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("取消") {
-                        dismiss()
+                        handleCancel()
                     }
                 }
                 
@@ -68,7 +72,7 @@ struct AddExpenseView: View {
                     viewModel.resetForm()
                 }
                 Button("完成") {
-                    dismiss()
+                    handleCompletion()
                 }
             } message: {
                 Text("支出记录已成功保存")
@@ -90,6 +94,27 @@ struct AddExpenseView: View {
             if isSuccess {
                 showingSuccessAlert = true
             }
+        }
+    }
+    
+    // MARK: - 私有方法
+    private func handleCancel() {
+        if let onDismiss = onDismiss {
+            // 从sheet调用时，关闭sheet
+            onDismiss()
+        } else {
+            // 从底部导航栏调用时，切换到首页
+            selectedTab = 0
+        }
+    }
+    
+    private func handleCompletion() {
+        if let onDismiss = onDismiss {
+            // 从sheet调用时，关闭sheet（返回到支出记录页面）
+            onDismiss()
+        } else {
+            // 从底部导航栏调用时，切换到首页
+            selectedTab = 0
         }
     }
 }
@@ -576,7 +601,8 @@ class AddExpenseViewModel: ObservableObject {
             return
         }
         
-        let request = CreateExpenseRequest(
+        // 创建支出请求对象（用于验证数据结构）
+        _ = CreateExpenseRequest(
             amount: amountValue,
             category: selectedCategory.rawValue,
             description: description.trimmingCharacters(in: .whitespaces),
@@ -606,9 +632,20 @@ class AddExpenseViewModel: ObservableObject {
                         self?.errorMessage = error.localizedDescription
                     }
                 },
-                receiveValue: { [weak self] _ in
+                receiveValue: { [weak self] expense in
                     self?.isSuccess = true
                     print("✅ 支出记录创建成功")
+                    
+                    // 发送支出数据变化通知，通知其他ViewModel刷新数据
+                    NotificationCenter.default.post(
+                        name: .expenseDataChanged,
+                        object: nil,
+                        userInfo: [
+                            NotificationUserInfoKeys.operationType: DataOperationType.created.rawValue,
+                            NotificationUserInfoKeys.expenseId: expense.id
+                        ]
+                    )
+                    print("📢 已发送支出数据变化通知")
                 }
             )
             .store(in: &cancellables)
@@ -619,7 +656,64 @@ class AddExpenseViewModel: ObservableObject {
 #if DEBUG
 struct AddExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        AddExpenseView()
+        Group {
+            // 默认状态
+            AddExpenseView(selectedTab: .constant(0))
+                .previewDisplayName("默认状态")
+            
+            // 深色模式
+            AddExpenseView(selectedTab: .constant(0))
+                .preferredColorScheme(.dark)
+                .previewDisplayName("深色模式")
+            
+            // iPhone SE 小屏幕
+            AddExpenseView(selectedTab: .constant(0))
+                .previewDevice("iPhone SE (3rd generation)")
+                .previewDisplayName("iPhone SE")
+            
+            // iPad 预览
+            AddExpenseView(selectedTab: .constant(0))
+                .previewDevice("iPad (10th generation)")
+                .previewDisplayName("iPad")
+        }
+    }
+}
+
+// 单独的组件预览
+struct AmountInputSection_Previews: PreviewProvider {
+    static var previews: some View {
+        PreviewWrapper()
+            .previewDisplayName("金额输入组件")
+    }
+    
+    struct PreviewWrapper: View {
+        @FocusState private var isAmountFocused: Bool
+        
+        var body: some View {
+            VStack {
+                AmountInputSection(
+                    amount: .constant("100.50"),
+                    isAmountFocused: $isAmountFocused,
+                    errorMessage: ""
+                )
+                .padding()
+                
+                AmountInputSection(
+                    amount: .constant(""),
+                    isAmountFocused: $isAmountFocused,
+                    errorMessage: "请输入有效的金额"
+                )
+                .padding()
+            }
+        }
+    }
+}
+
+struct CategorySelectionView_Previews: PreviewProvider {
+    static var previews: some View {
+        CategorySelectionView(selectedCategory: .constant(.food))
+            .padding()
+            .previewDisplayName("分类选择组件")
     }
 }
 #endif

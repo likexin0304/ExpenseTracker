@@ -8,6 +8,15 @@ struct HomeView: View {
     // MARK: - 状态管理
     @StateObject private var budgetViewModel = BudgetViewModel()
     @StateObject private var authService = AuthService.shared
+    @State private var showingAddExpense = false
+    
+    // 用于标签页切换的绑定
+    @Binding var selectedTab: Int
+    
+    // MARK: - 初始化
+    init(selectedTab: Binding<Int>) {
+        self._selectedTab = selectedTab
+    }
     
     // MARK: - 主体视图
     var body: some View {
@@ -52,7 +61,12 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            budgetViewModel.loadBudgetData()
+            // 只在用户已登录时才加载预算数据
+            if authService.isAuthenticated {
+                budgetViewModel.loadBudgetData()
+            } else {
+                print("⚠️ 用户未登录，跳过预算数据加载")
+            }
         }
         .alert("错误", isPresented: $budgetViewModel.showError) {
             Button("确定") {
@@ -63,6 +77,15 @@ struct HomeView: View {
         }
         .sheet(isPresented: $budgetViewModel.showSetBudgetSheet) {
             SetBudgetView(viewModel: budgetViewModel)
+        }
+        .sheet(isPresented: $showingAddExpense) {
+            AddExpenseView(selectedTab: .constant(0), onDismiss: {
+                showingAddExpense = false
+            })
+            .onDisappear {
+                // 刷新预算数据，因为可能添加了新支出
+                budgetViewModel.refreshBudget()
+            }
         }
     }
     
@@ -303,7 +326,7 @@ struct HomeView: View {
                     subtitle: "记录新的消费",
                     color: .systemBlue
                 ) {
-                    // TODO: 跳转到添加支出页面
+                    showingAddExpense = true
                 }
                 
                 // 查看历史按钮
@@ -313,7 +336,7 @@ struct HomeView: View {
                     subtitle: "查看消费记录",
                     color: .systemGreen
                 ) {
-                    // TODO: 跳转到支出历史页面
+                    selectedTab = 1 // 切换到记录页面
                 }
             }
         }
@@ -354,6 +377,6 @@ struct HomeView: View {
 // MARK: - 预览
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(selectedTab: .constant(0))
     }
 }

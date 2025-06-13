@@ -1,0 +1,280 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/ExpenseListView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "错误",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出记录",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "确定",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "总支出",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "笔数",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "平均",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类统计",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "清除",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "删除",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 287
+        }
+      },
+      {
+        "comment": "",
+        "key": "编辑",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 291
+        }
+      },
+      {
+        "comment": "",
+        "key": "加载更多...",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 318
+        }
+      },
+      {
+        "comment": "",
+        "key": "加载中...",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 404
+        }
+      },
+      {
+        "comment": "",
+        "key": "暂无支出记录",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 482
+        }
+      },
+      {
+        "comment": "",
+        "key": "开始记录您的支出，更好地管理财务",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 487
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加第一笔支出",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 496
+        }
+      },
+      {
+        "comment": "",
+        "key": "筛选条件",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 574
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类筛选",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 520
+        }
+      },
+      {
+        "comment": "",
+        "key": "时间范围",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 535
+        }
+      },
+      {
+        "comment": "",
+        "key": "搜索",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 553
+        }
+      },
+      {
+        "comment": "",
+        "key": "排序",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 558
+        }
+      },
+      {
+        "comment": "",
+        "key": "选择分类",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 521
+        }
+      },
+      {
+        "comment": "",
+        "key": "全部分类",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 522
+        }
+      },
+      {
+        "comment": "",
+        "key": "开始日期",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 536
+        }
+      },
+      {
+        "comment": "",
+        "key": "结束日期",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 541
+        }
+      },
+      {
+        "comment": "",
+        "key": "清除时间范围",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 546
+        }
+      },
+      {
+        "comment": "",
+        "key": "搜索描述、分类或地点",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 554
+        }
+      },
+      {
+        "comment": "",
+        "key": "排序方式",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 559
+        }
+      },
+      {
+        "comment": "",
+        "key": "排序顺序",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 566
+        }
+      },
+      {
+        "comment": "",
+        "key": "重置",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 578
+        }
+      },
+      {
+        "comment": "",
+        "key": "完成",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 584
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出详情",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 668
+        }
+      },
+      {
+        "comment": "",
+        "key": "完成",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 672
+        }
+      }
+    ]
+  },
+  "version": 1
+}

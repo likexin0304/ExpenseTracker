@@ -41,10 +41,36 @@ class BudgetViewModel: ObservableObject {
     init() {
         print("🎯 BudgetViewModel初始化")
         setupBindings()
+        setupNotificationObservers()
         loadBudgetData()
     }
     
+    deinit {
+        print("🎯 BudgetViewModel销毁")
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - 数据绑定设置
+    
+    /**
+     * 设置通知监听
+     * 监听支出数据变化通知并刷新预算统计
+     */
+    private func setupNotificationObservers() {
+        // 监听支出数据变化通知
+        NotificationCenter.default.addObserver(
+            forName: .expenseDataChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            print("📢 BudgetViewModel收到支出数据变化通知")
+            if let operationType = notification.userInfo?[NotificationUserInfoKeys.operationType] as? String {
+                print("📊 操作类型: \(operationType)")
+                // 无论是创建、更新还是删除支出，都需要刷新预算统计
+                self?.refreshBudgetStatistics()
+            }
+        }
+    }
     
     /**
      * 设置数据绑定
@@ -162,6 +188,29 @@ class BudgetViewModel: ObservableObject {
     func refreshBudget() {
         print("🔄 刷新预算数据")
         loadBudgetData()
+    }
+    
+    /**
+     * 刷新预算统计数据
+     * 当支出数据发生变化时调用
+     */
+    private func refreshBudgetStatistics() {
+        print("📊 刷新预算统计数据")
+        
+        // 只刷新统计数据，不重新加载预算设置
+        budgetService.getCurrentBudgetStatus()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ 刷新预算统计失败: \(error.localizedDescription)")
+                    }
+                },
+                receiveValue: { _ in
+                    print("✅ 预算统计数据刷新成功")
+                }
+            )
+            .store(in: &cancellables)
     }
     
     /**

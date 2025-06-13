@@ -1,0 +1,418 @@
+{
+  "" : {
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker-master.dia",
+    "emit-module-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker-master-emit-module.dia",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker-master.swiftdeps"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/ContentView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Extensions/Color+Extensions.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Color+Extensions~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Extensions/View+Extensions.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/View+Extensions~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/APIConfig.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIConfig~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/APIResponse.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/APIResponse~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/NetworkError.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkError~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/NetworkManager.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/ResponseHandler.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/ExpenseTrackerApp.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTrackerApp~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Models/AuthModels.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Models/User.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Services/AuthService.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthService~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/ViewModels/AuthViewModel.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthViewModel~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/AuthenticationView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthenticationView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/AccountDeletionConfirmationView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AccountDeletionConfirmationView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/CustomTextField.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/CustomTextField~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/ErrorMessageView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ErrorMessageView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/LoadingButton.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoadingButton~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/LoginView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/LoginView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/RegisterView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/RegisterView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Models/Budget.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Budget~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Models/BudgetResponse.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetResponse~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Services/BudgetService.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetService~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/ViewModels/BudgetViewModel.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetViewModel~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Views/Components/BudgetProgressRing.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/BudgetProgressRing~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Views/SetBudgetView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/SetBudgetView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Models/Expense.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Expense~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Models/ExpenseCategory.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseCategory~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Services/ExpenseService.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseService~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/ViewModels/ExpenseViewModel.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseViewModel~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/AddExpenseView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AddExpenseView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/EditExpenseView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/EditExpenseView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/ExpenseListView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseListView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/PieChartView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/PieChartView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Home/Views/Components/QuickActionCard.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/QuickActionCard~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Home/Views/HomeView.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/HomeView~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Persistence.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Persistence~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/DerivedSources/CoreDataGenerated/ExpenseTracker/ExpenseTracker+CoreDataModel.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ExpenseTracker+CoreDataModel~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/DerivedSources/CoreDataGenerated/ExpenseTracker/Item+CoreDataClass.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataClass~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/DerivedSources/CoreDataGenerated/ExpenseTracker/Item+CoreDataProperties.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/Item+CoreDataProperties~partial.swiftmodule"
+  },
+  "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

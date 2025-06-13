@@ -6,6 +6,7 @@ class ExpenseViewModel: ObservableObject {
     // MARK: - Published Properties
     @Published var expenses: [Expense] = []
     @Published var isLoading = false
+    @Published var isRefreshing = false
     @Published var errorMessage: String?
     @Published var showingError = false
     
@@ -61,6 +62,12 @@ class ExpenseViewModel: ObservableObject {
     init(expenseService: ExpenseServiceProtocol = ExpenseService()) {
         self.expenseService = expenseService
         print("📊 ExpenseViewModel 初始化完成")
+        setupNotificationObservers()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        print("📊 ExpenseViewModel 已销毁")
     }
     
     // MARK: - Public Methods
@@ -71,8 +78,9 @@ class ExpenseViewModel: ObservableObject {
         
         if refresh {
             currentPage = 1
-            expenses = []
             hasMorePages = false
+            isRefreshing = true
+            // 不立即清空expenses，保持现有数据直到新数据到达
         }
         
         guard !isLoading else {
@@ -98,6 +106,7 @@ class ExpenseViewModel: ObservableObject {
             receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 self?.isLoadingMore = false
+                self?.isRefreshing = false
                 
                 if case .failure(let error) = completion {
                     self?.handleError(error)
@@ -256,5 +265,22 @@ class ExpenseViewModel: ObservableObject {
         errorMessage = error.localizedDescription
         showingError = true
         print("❌ 支出操作失败: \(error)")
+    }
+    
+    /// 设置通知监听
+    private func setupNotificationObservers() {
+        // 监听支出数据变化通知
+        NotificationCenter.default.addObserver(
+            forName: .expenseDataChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            print("📢 ExpenseViewModel收到支出数据变化通知")
+            if let operationType = notification.userInfo?[NotificationUserInfoKeys.operationType] as? String {
+                print("📊 操作类型: \(operationType)")
+                // 无论是创建、更新还是删除支出，都需要刷新支出列表
+                self?.loadExpenses(refresh: true)
+            }
+        }
     }
 }

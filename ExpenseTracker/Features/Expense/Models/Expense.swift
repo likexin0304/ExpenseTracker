@@ -172,18 +172,70 @@ struct ExpensePagination: Codable {
     let limit: Int
 }
 
+/// 通用分页信息模型 - 用于兼容不同的API响应格式
+struct PaginationInfo: Codable {
+    let currentPage: Int
+    let totalPages: Int
+    let totalItems: Int
+    let itemsPerPage: Int
+    let hasNextPage: Bool
+    let hasPrevPage: Bool
+    
+    init(currentPage: Int, totalPages: Int, totalItems: Int, itemsPerPage: Int, hasNextPage: Bool, hasPrevPage: Bool) {
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.totalItems = totalItems
+        self.itemsPerPage = itemsPerPage
+        self.hasNextPage = hasNextPage
+        self.hasPrevPage = hasPrevPage
+    }
+}
+
 /// 支出数据模型（与ExpensesListResponse相同，为了兼容性）
 typealias ExpensesData = ExpensesListResponse
 
 // MARK: - 测试数据支持
 #if DEBUG
 extension Expense {
-    static let mockData = [
+    static let mockData: [Expense] = [
         Expense(
-            id: 1, userId: 1, amount: 299.99, category: "餐饮", 
-            description: "午餐费用", date: Date(), location: "北京市朝阳区",
-            paymentMethod: "支付宝", tags: ["工作餐"],
-            createdAt: Date(), updatedAt: Date()
+            id: 1,
+            userId: 1,
+            amount: 25.50,
+            category: "food",
+            description: "午餐",
+            date: Date(),
+            location: "公司附近",
+            paymentMethod: "cash",
+            tags: ["工作日", "午餐"],
+            createdAt: Date(),
+            updatedAt: Date()
+        ),
+        Expense(
+            id: 2,
+            userId: 1,
+            amount: 120.00,
+            category: "transport",
+            description: "打车回家",
+            date: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
+            location: "市中心",
+            paymentMethod: "alipay",
+            tags: ["加班"],
+            createdAt: Date(),
+            updatedAt: Date()
+        ),
+        Expense(
+            id: 3,
+            userId: 1,
+            amount: 89.90,
+            category: "shopping",
+            description: "买书",
+            date: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
+            location: "书店",
+            paymentMethod: "wechat",
+            tags: ["学习", "技术"],
+            createdAt: Date(),
+            updatedAt: Date()
         )
     ]
     

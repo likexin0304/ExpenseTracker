@@ -62,7 +62,9 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         )
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，无法添加支出")
+            // 静默返回，不显示错误
+            return Fail(error: NetworkError.serverError("请先登录"))
                 .eraseToAnyPublisher()
         }
         
@@ -104,7 +106,19 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         print("📋 获取支出列表: page=\(page), limit=\(limit)")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，返回空支出列表")
+            // 返回空列表，不显示错误
+            let emptyResponse = ExpensesListResponse(
+                expenses: [],
+                pagination: ExpensePagination(
+                    current: 1,
+                    pages: 0,
+                    total: 0,
+                    limit: limit
+                )
+            )
+            return Just(emptyResponse)
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -162,7 +176,10 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         print("📂 获取支出分类列表")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，返回空分类列表")
+            // 返回空分类列表，不显示错误
+            return Just([])
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -199,7 +216,21 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         print("📊 获取支出统计: period=\(period)")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，返回空统计数据")
+            // 返回空统计数据，不显示错误
+            let emptyStats = ExpenseStatsResponse(
+                categoryStats: [],
+                totalStats: TotalStat(
+                    totalAmount: 0,
+                    totalCount: 0,
+                    avgAmount: 0,
+                    maxAmount: 0,
+                    minAmount: 0
+                ),
+                periodStats: []
+            )
+            return Just(emptyStats)
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
@@ -251,7 +282,8 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         print("✏️ 更新支出记录: ID=\(expenseId)")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，无法更新支出")
+            return Fail(error: NetworkError.serverError("请先登录"))
                 .eraseToAnyPublisher()
         }
         
@@ -297,7 +329,8 @@ class ExpenseService: ObservableObject, ExpenseServiceProtocol {
         print("🗑️ 删除支出记录: ID=\(expenseId)")
         
         guard let token = getAuthToken() else {
-            return Fail(error: NetworkError.serverError("用户未登录"))
+            print("⚠️ 用户未登录，无法删除支出")
+            return Fail(error: NetworkError.serverError("请先登录"))
                 .eraseToAnyPublisher()
         }
         

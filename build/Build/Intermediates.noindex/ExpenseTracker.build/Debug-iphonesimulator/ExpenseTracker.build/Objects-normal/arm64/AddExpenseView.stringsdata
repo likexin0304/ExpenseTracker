@@ -1,0 +1,256 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/AddExpenseView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "添加支出",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存成功",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "错误",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "取消",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "继续添加",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "完成",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出记录已成功保存",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "确定",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出金额",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "¥",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "0.00",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "快速选择",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 159
+        }
+      },
+      {
+        "comment": "",
+        "key": "¥%@",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "基本信息",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 191
+        }
+      },
+      {
+        "comment": "",
+        "key": "描述",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "请输入支出描述",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 204
+        }
+      },
+      {
+        "comment": "",
+        "key": "日期",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 212
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "地点 (可选)",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 223
+        }
+      },
+      {
+        "comment": "",
+        "key": "请输入地点",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 227
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "支付方式",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 291
+        }
+      },
+      {
+        "comment": "",
+        "key": "标签 (可选)",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 343
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加标签",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 349
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 352
+        }
+      },
+      {
+        "comment": "",
+        "key": "备注 (可选)",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 407
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加备注...",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 421
+        }
+      },
+      {
+        "comment": "",
+        "key": "高级选项",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 441
+        }
+      },
+      {
+        "comment": "",
+        "key": "重复支出",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 445
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存中...",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 465
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,24 @@
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Models/User.swift":
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.swiftconstvalues"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.o"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.swiftdeps"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.dia"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/User.d"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Models/AuthModels.swift":
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.o"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.d"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.dia"
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.swiftconstvalues"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/AuthModels.swiftdeps"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/ResponseHandler.swift":
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.swiftconstvalues"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.d"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.swiftdeps"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.dia"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/ResponseHandler.o"
+"/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Core/Network/NetworkManager.swift":
+  const-values: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.swiftconstvalues"
+  diagnostics: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.dia"
+  dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.d"
+  object: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.o"
+  swift-dependencies: "/Users/kexin.li/Desktop/ExpenseTracker/build/Build/Intermediates.noindex/ExpenseTracker.build/Debug-iphonesimulator/ExpenseTracker.build/Objects-normal/arm64/NetworkManager.swiftdeps"

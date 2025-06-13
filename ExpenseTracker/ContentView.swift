@@ -35,51 +35,59 @@ struct ContentView: View {
 struct MainAppView: View {
     // MARK: - 状态管理
     @EnvironmentObject var budgetViewModel: BudgetViewModel
+    @StateObject private var authViewModel = AuthViewModel()
     @State private var selectedTab = 0
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            // 首页
-            HomeView()
-                .tabItem {
-                    Image(systemName: selectedTab == 0 ? "house.fill" : "house")
-                    Text("首页")
-                }
-                .tag(0)
+        ZStack {
+            TabView(selection: $selectedTab) {
+                // 首页
+                HomeView(selectedTab: $selectedTab)
+                    .tabItem {
+                        Image(systemName: selectedTab == 0 ? "house.fill" : "house")
+                        Text("首页")
+                    }
+                    .tag(0)
+                
+                // 支出记录
+                ExpenseListView()
+                    .tabItem {
+                        Image(systemName: selectedTab == 1 ? "list.bullet.clipboard.fill" : "list.bullet.clipboard")
+                        Text("记录")
+                    }
+                    .tag(1)
+                
+                // 添加支出
+                AddExpenseView(selectedTab: $selectedTab)
+                    .tabItem {
+                        Image(systemName: selectedTab == 2 ? "plus.circle.fill" : "plus.circle")
+                        Text("添加")
+                    }
+                    .tag(2)
+                
+                // 预算管理
+                SetBudgetView(viewModel: budgetViewModel)
+                    .tabItem {
+                        Image(systemName: selectedTab == 3 ? "chart.pie.fill" : "chart.pie")
+                        Text("预算")
+                    }
+                    .tag(3)
+                
+                // 设置
+                SettingsView()
+                    .environmentObject(authViewModel)
+                    .tabItem {
+                        Image(systemName: selectedTab == 4 ? "gearshape.fill" : "gearshape")
+                        Text("设置")
+                    }
+                    .tag(4)
+            }
+            .accentColor(.systemBlue)
             
-            // 支出记录
-            ExpenseListView()
-                .tabItem {
-                    Image(systemName: selectedTab == 1 ? "list.bullet.clipboard.fill" : "list.bullet.clipboard")
-                    Text("记录")
-                }
-                .tag(1)
-            
-            // 添加支出
-            AddExpenseView()
-                .tabItem {
-                    Image(systemName: "plus.circle.fill")
-                    Text("添加")
-                }
-                .tag(2)
-            
-            // 统计分析
-            ExpenseStatsView()
-                .tabItem {
-                    Image(systemName: selectedTab == 3 ? "chart.bar.fill" : "chart.bar")
-                    Text("统计")
-                }
-                .tag(3)
-            
-            // 设置
-            SettingsView()
-                .tabItem {
-                    Image(systemName: selectedTab == 4 ? "gear.fill" : "gear")
-                    Text("设置")
-                }
-                .tag(4)
+            // 自动识别功能覆盖层
+            AutoRecognitionView()
+                .allowsHitTesting(false) // 不阻止底层交互
         }
-        .accentColor(.blue)
         .onAppear {
             // 配置TabBar外观
             configureTabBarAppearance()
@@ -163,8 +171,10 @@ struct ExpenseStatsView: View {
  * 设置视图
  */
 struct SettingsView: View {
-    @StateObject private var authViewModel = AuthViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject private var budgetService = BudgetService.shared
+    @StateObject private var autoRecognitionViewModel = AutoRecognitionViewModel()
+    @State private var showingDeleteAccountConfirmation = false
     
     var body: some View {
         NavigationView {
@@ -181,11 +191,17 @@ struct SettingsView: View {
                 // 关于区域
                 aboutSection
                 
-                // 登出区域
-                logoutSection
+                // 账号管理区域
+                accountManagementSection
             }
             .navigationTitle("设置")
             .navigationBarTitleDisplayMode(.large)
+            .sheet(isPresented: $showingDeleteAccountConfirmation) {
+                AccountDeletionConfirmationView(
+                    authViewModel: authViewModel,
+                    isPresented: $showingDeleteAccountConfirmation
+                )
+            }
         }
     }
     
@@ -271,6 +287,32 @@ struct SettingsView: View {
     // MARK: - 应用设置区域
     private var appSettingsSection: some View {
         Section {
+            // 自动识别账单功能
+            HStack {
+                Image(systemName: "doc.text.viewfinder")
+                    .foregroundColor(.blue)
+                    .frame(width: 24)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("自动识别账单")
+                        .font(.body)
+                    
+                    Text("背面敲击3下识别屏幕上的账单信息")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Toggle("", isOn: $autoRecognitionViewModel.isEnabled)
+                    .labelsHidden()
+                    .onChange(of: autoRecognitionViewModel.isEnabled) { _, newValue in
+                        if newValue != autoRecognitionViewModel.isEnabled {
+                            autoRecognitionViewModel.toggleEnabled()
+                        }
+                    }
+            }
+            
             SettingsRow(
                 icon: "moon.fill",
                 title: "深色模式",
@@ -293,6 +335,13 @@ struct SettingsView: View {
             )
         } header: {
             Text("应用设置")
+        }
+        .alert("错误", isPresented: .constant(autoRecognitionViewModel.errorMessage != nil)) {
+            Button("确定") {
+                autoRecognitionViewModel.errorMessage = nil
+            }
+        } message: {
+            Text(autoRecognitionViewModel.errorMessage ?? "")
         }
     }
     
@@ -330,9 +379,26 @@ struct SettingsView: View {
         }
     }
     
-    // MARK: - 登出区域
-    private var logoutSection: some View {
+    // MARK: - 账号管理区域
+    private var accountManagementSection: some View {
         Section {
+            // 删除账号按钮
+            Button(action: {
+                showingDeleteAccountConfirmation = true
+            }) {
+                HStack {
+                    Image(systemName: "trash.fill")
+                        .foregroundColor(.red)
+                        .frame(width: 24)
+                    
+                    Text("删除账号")
+                        .foregroundColor(.red)
+                    
+                    Spacer()
+                }
+            }
+            
+            // 退出登录按钮
             Button(action: {
                 authViewModel.logout()
             }) {
@@ -347,6 +413,8 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
+        } header: {
+            Text("账号管理")
         }
     }
 }
@@ -391,6 +459,32 @@ class ExpenseStatsViewModel: ObservableObject {
     
     init(expenseService: ExpenseServiceProtocol = ExpenseService()) {
         self.expenseService = expenseService
+        setupNotificationObservers()
+    }
+    
+    deinit {
+        print("📊 ExpenseStatsViewModel销毁")
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    /**
+     * 设置通知监听
+     * 监听支出数据变化通知并刷新统计数据
+     */
+    private func setupNotificationObservers() {
+        // 监听支出数据变化通知
+        NotificationCenter.default.addObserver(
+            forName: .expenseDataChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            print("📢 ExpenseStatsViewModel收到支出数据变化通知")
+            if let operationType = notification.userInfo?[NotificationUserInfoKeys.operationType] as? String {
+                print("📊 操作类型: \(operationType)")
+                // 无论是创建、更新还是删除支出，都需要刷新统计数据
+                self?.loadStats()
+            }
+        }
     }
     
     func loadStats() {
@@ -416,6 +510,27 @@ class ExpenseStatsViewModel: ObservableObject {
 }
 
 // MARK: - 预览
-#Preview {
-    ContentView()
+#if DEBUG
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            // 已登录状态
+            ContentView()
+                .previewDisplayName("已登录")
+            
+            // 深色模式
+            ContentView()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("深色模式")
+        }
+    }
 }
+
+struct MainAppView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainAppView()
+            .environmentObject(BudgetViewModel())
+            .previewDisplayName("主应用界面")
+    }
+}
+#endif

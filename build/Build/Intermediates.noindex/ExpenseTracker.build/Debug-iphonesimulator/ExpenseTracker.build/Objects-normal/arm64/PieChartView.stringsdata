@@ -1,0 +1,80 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Expense/Views/PieChartView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "支出分类占比",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 29
+        }
+      },
+      {
+        "comment": "",
+        "key": "总支出",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类详情",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "暂无统计数据",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 248
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加一些支出记录后即可查看分类统计图表",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 253
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出总览",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 302
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出排行",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 349
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 379
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld 笔 · 平均 %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 399
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -9,29 +9,16 @@ struct ExpenseListView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                // 汇总信息卡片
-                if !viewModel.expenses.isEmpty {
-                    ExpenseSummaryCard(viewModel: viewModel)
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                }
-                
-                // 筛选状态栏
-                if viewModel.hasActiveFilters {
-                    FilterStatusBar(viewModel: viewModel)
-                        .padding(.horizontal)
-                }
-                
-                // 主要内容区域
-                Group {
-                    if viewModel.expenses.isEmpty && !viewModel.isLoading {
-                        ExpenseEmptyStateView {
-                            showingAddExpense = true
-                        }
-                    } else {
-                        ExpenseList(viewModel: viewModel, selectedExpense: $selectedExpense)
+            Group {
+                if viewModel.expenses.isEmpty && !viewModel.isLoading {
+                    ExpenseEmptyStateView {
+                        showingAddExpense = true
                     }
+                } else {
+                    ExpenseList(viewModel: viewModel, selectedExpense: $selectedExpense)
+                        .refreshable {
+                            viewModel.loadExpenses(refresh: true)
+                        }
                 }
             }
             .navigationTitle("支出记录")
@@ -54,15 +41,14 @@ struct ExpenseListView: View {
                     }
                 }
             }
-            .refreshable {
-                viewModel.loadExpenses(refresh: true)
-            }
         }
         .sheet(isPresented: $showingAddExpense) {
-            AddExpenseView()
-                .onDisappear {
-                    viewModel.loadExpenses(refresh: true)
-                }
+            AddExpenseView(selectedTab: .constant(0), onDismiss: {
+                showingAddExpense = false
+            })
+            .onDisappear {
+                viewModel.loadExpenses(refresh: true)
+            }
         }
         .sheet(isPresented: $showingFilters) {
             ExpenseFilterView(viewModel: viewModel)
@@ -79,8 +65,11 @@ struct ExpenseListView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .onAppear {
-            if viewModel.expenses.isEmpty {
+            // 只在用户已登录时才加载支出数据
+            if AuthService.shared.isAuthenticated && viewModel.expenses.isEmpty {
                 viewModel.loadExpenses(refresh: true)
+            } else if !AuthService.shared.isAuthenticated {
+                print("⚠️ 用户未登录，跳过支出数据加载")
             }
         }
     }
@@ -94,14 +83,26 @@ struct ExpenseSummaryCard: View {
         VStack(spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("总支出")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    HStack(spacing: 4) {
+                        Text("总支出")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        // 刷新状态指示器
+                        if viewModel.isRefreshing {
+                            ProgressView()
+                                .scaleEffect(0.6)
+                                .frame(width: 12, height: 12)
+                        }
+                    }
                     
                     Text(viewModel.formattedTotalAmount)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
+                        .opacity(viewModel.isRefreshing ? 0.6 : 1.0)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.isRefreshing)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8), value: viewModel.totalAmount)
                 }
                 
                 Spacer()
@@ -115,6 +116,9 @@ struct ExpenseSummaryCard: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
+                        .opacity(viewModel.isRefreshing ? 0.6 : 1.0)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.isRefreshing)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8), value: viewModel.expenseCount)
                 }
                 
                 VStack(alignment: .trailing, spacing: 4) {
@@ -126,12 +130,16 @@ struct ExpenseSummaryCard: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.green)
+                        .opacity(viewModel.isRefreshing ? 0.6 : 1.0)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.isRefreshing)
                 }
             }
             
             // 添加分类统计图表
             if !viewModel.expenses.isEmpty {
                 CategoryStatsBar(viewModel: viewModel)
+                    .opacity(viewModel.isRefreshing ? 0.6 : 1.0)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.isRefreshing)
             }
         }
         .padding()
@@ -241,7 +249,7 @@ struct FilterStatusBar: View {
             }
         }
         .padding(.vertical, 8)
-        .padding(.horizontal)
+        .padding(.horizontal, 12)
         .background(Color(.systemGray6))
         .cornerRadius(12)
     }
@@ -275,6 +283,27 @@ struct ExpenseList: View {
     
     var body: some View {
         List {
+            // 汇总信息卡片 - 作为List的第一个section
+            if !viewModel.expenses.isEmpty {
+                Section {
+                    ExpenseSummaryCard(viewModel: viewModel)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
+            }
+            
+            // 筛选状态栏 - 作为List的第二个section
+            if viewModel.hasActiveFilters {
+                Section {
+                    FilterStatusBar(viewModel: viewModel)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
+            }
+            
+            // 支出记录sections
             ForEach(groupedExpenses, id: \.date) { group in
                 Section {
                     ForEach(group.expenses) { expense in
@@ -719,7 +748,31 @@ struct ExpenseDetailRow: View {
 #if DEBUG
 struct ExpenseListView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseListView()
+        Group {
+            // 默认状态
+            ExpenseListView()
+                .previewDisplayName("支出列表")
+            
+            // 深色模式
+            ExpenseListView()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("深色模式")
+            
+            // iPad 预览
+            ExpenseListView()
+                .previewDevice("iPad (10th generation)")
+                .previewDisplayName("iPad")
+        }
+    }
+}
+
+// 组件预览
+struct ExpenseSummaryCard_Previews: PreviewProvider {
+    static var previews: some View {
+        let mockViewModel = ExpenseViewModel()
+        ExpenseSummaryCard(viewModel: mockViewModel)
+            .padding()
+            .previewDisplayName("汇总卡片")
     }
 }
 #endif

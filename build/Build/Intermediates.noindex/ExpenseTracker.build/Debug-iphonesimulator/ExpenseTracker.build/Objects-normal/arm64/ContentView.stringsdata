@@ -1,0 +1,224 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "首页",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "记录",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "统计分析",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "加载统计数据...",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "刷新数据",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "统计分析",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "查看详细的支出分析和趋势",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "记账用户",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 220
+        }
+      },
+      {
+        "comment": "",
+        "key": "用户信息",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 229
+        }
+      },
+      {
+        "comment": "",
+        "key": "修改",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 258
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 258
+        }
+      },
+      {
+        "comment": "",
+        "key": "当前预算",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 242
+        }
+      },
+      {
+        "comment": "",
+        "key": "未设置",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 250
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算提醒",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 268
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 272
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算设置",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 276
+        }
+      },
+      {
+        "comment": "",
+        "key": "应用设置",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 304
+        }
+      },
+      {
+        "comment": "",
+        "key": "版本",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "1.0.0",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 334
+        }
+      },
+      {
+        "comment": "",
+        "key": "关于",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 338
+        }
+      },
+      {
+        "comment": "",
+        "key": "删除账号",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 354
+        }
+      },
+      {
+        "comment": "",
+        "key": "退出登录",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 370
+        }
+      },
+      {
+        "comment": "",
+        "key": "账号管理",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 377
+        }
+      }
+    ]
+  },
+  "version": 1
+}

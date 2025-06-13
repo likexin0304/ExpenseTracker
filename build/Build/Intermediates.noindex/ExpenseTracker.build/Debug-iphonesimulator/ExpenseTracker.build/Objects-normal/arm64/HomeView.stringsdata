@@ -1,0 +1,144 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Home/Views/HomeView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "错误",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "记账助手",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "确定",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hello, %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "月度预算",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 132
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算总额",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 169
+        }
+      },
+      {
+        "comment": "",
+        "key": "已花费 %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 181
+        }
+      },
+      {
+        "comment": "",
+        "key": "剩余预算",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 197
+        }
+      },
+      {
+        "comment": "",
+        "key": "平均每日可用",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 209
+        }
+      },
+      {
+        "comment": "",
+        "key": "还未设置预算",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 231
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置月度预算，更好地管理您的支出",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 235
+        }
+      },
+      {
+        "comment": "",
+        "key": "立即设置",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 244
+        }
+      },
+      {
+        "comment": "",
+        "key": "支出统计",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "查看详情",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 267
+        }
+      },
+      {
+        "comment": "",
+        "key": "快速操作",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 288
+        }
+      },
+      {
+        "comment": "",
+        "key": "智能建议",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 331
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,16 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Views/Components/BudgetProgressRing.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 101
+        }
+      }
+    ]
+  },
+  "version": 1
+}

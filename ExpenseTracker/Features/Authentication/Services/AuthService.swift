@@ -72,13 +72,51 @@ class AuthService: ObservableObject {
     // MARK: - 登出
     func logout() {
         print("🚪 用户登出")
+        clearAllData()
+    }
+    
+    // MARK: - 删除账号
+    func deleteAccount(confirmationText: String) -> AnyPublisher<Void, NetworkError> {
+        print("🗑️ 开始删除账号流程")
+        
+        let request = DeleteAccountRequest(confirmationText: confirmationText)
+        
+        return networkManager.request(
+            endpoint: "/auth/account",
+            method: .DELETE,
+            body: request,
+            responseType: DeleteAccountResponse.self
+        )
+        .map { response in
+            print("📧 删除账号响应: success=\(response.success)")
+            if response.success {
+                print("✅ 账号删除成功，清除所有本地数据")
+                self.clearAllData()
+            } else {
+                print("❌ 账号删除失败: \(response.message ?? "未知错误")")
+            }
+            return ()
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    // MARK: - 清除所有数据
+    private func clearAllData() {
+        print("🧹 清除所有本地数据")
+        
+        // 清除认证相关数据
         UserDefaults.standard.removeObject(forKey: tokenKey)
+        
+        // 清除其他可能的缓存数据
+        UserDefaults.standard.removeObject(forKey: "cached_expenses")
+        UserDefaults.standard.removeObject(forKey: "cached_budget")
+        UserDefaults.standard.removeObject(forKey: "user_preferences")
         
         // ✅ 确保UI状态更新在主线程执行
         DispatchQueue.main.async {
             self.currentUser = nil
             self.isAuthenticated = false
-            print("✅ 登出状态已在主线程更新")
+            print("✅ 所有状态已在主线程清除")
         }
     }
     

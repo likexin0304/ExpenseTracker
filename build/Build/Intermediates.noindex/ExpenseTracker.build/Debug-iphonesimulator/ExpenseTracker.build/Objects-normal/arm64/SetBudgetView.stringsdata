@@ -1,0 +1,176 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Budget/Views/SetBudgetView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "确认设置预算",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "修改预算",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置预算",
+        "location": {
+          "startingColumn": 69,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "取消",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "取消",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "确认",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "确认设置月度预算为 %@ 吗？",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "修改月度预算",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置月度预算",
+        "location": {
+          "startingColumn": 67,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "当前预算",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算金额",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "已使用",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算金额",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "¥",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 164
+        }
+      },
+      {
+        "comment": "",
+        "key": "0",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 169
+        }
+      },
+      {
+        "comment": "",
+        "key": "预算建议",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 210
+        }
+      },
+      {
+        "comment": "",
+        "key": "快速选择",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 251
+        }
+      },
+      {
+        "comment": "",
+        "key": "¥%lld",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 313
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld万",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 318
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存中...",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 350
+        }
+      }
+    ]
+  },
+  "version": 1
+}

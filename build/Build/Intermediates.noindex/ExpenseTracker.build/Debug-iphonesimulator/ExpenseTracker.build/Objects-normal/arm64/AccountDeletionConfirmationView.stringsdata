@@ -1,0 +1,72 @@
+{
+  "source": "/Users/kexin.li/Desktop/ExpenseTracker/ExpenseTracker/Features/Authentication/Views/Components/AccountDeletionConfirmationView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "删除账号",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "你正在删除账号，账号删除后无法找回相关数据，请你认真思考并确认该操作。",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "请输入「我确认」来确认执行账号删除",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "请输入：我确认",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "取消",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "删除中...",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "确认删除账号",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 72
+        }
+      }
+    ]
+  },
+  "version": 1
+}
