@@ -8,6 +8,9 @@ extension Notification.Name {
     /// 支出数据发生变化的通知
     static let expenseDataChanged = Notification.Name("expenseDataChanged")
     
+    /// 支出删除成功的通知
+    static let expenseDeleted = Notification.Name("expenseDeleted")
+    
     /// 预算数据发生变化的通知
     static let budgetDataChanged = Notification.Name("budgetDataChanged")
     
@@ -27,6 +30,9 @@ struct NotificationUserInfoKeys {
     
     /// 预算ID键
     static let budgetId = "budgetId"
+    
+    /// 跳过刷新标记键
+    static let skipRefresh = "skipRefresh"
 }
 
 /**

@@ -60,22 +60,39 @@ class BudgetService: ObservableObject {
                 .eraseToAnyPublisher()
         }
         
-        let headers = ["Authorization": "Bearer \(token)"]
         
         return networkManager.request(
-            endpoint: "/budget",
+            endpoint: .budgetSet,
             method: .POST,
-            headers: headers,
             body: request,
-            responseType: SetBudgetResponse.self
+            responseType: APIResponse<SetBudgetResponse>.self
         )
-        .map { [weak self] response in
-            print("✅ 预算设置成功: \(response.budget.formattedAmount)")
-            self?.currentBudget = response.budget
+        .tryMap { [weak self] response in
+            print("📦 收到设置预算响应: success=\(response.success)")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "设置预算失败"
+                print("❌ 设置预算失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            guard let data = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
+            print("✅ 预算设置成功: \(data.budget.formattedAmount)")
+            self?.currentBudget = data.budget
             
             // 设置预算后自动刷新统计数据
             self?.refreshBudgetStatus()
             return ()
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                print("❌ 预算设置解析失败: \(error)")
+                return NetworkError.decodingError(error)
+            }
         }
         .eraseToAnyPublisher()
     }
@@ -94,19 +111,28 @@ class BudgetService: ObservableObject {
                 .eraseToAnyPublisher()
         }
         
-        let headers = ["Authorization": "Bearer \(token)"]
         
         return networkManager.request(
-            endpoint: "/budget/current",
+            endpoint: .budgetCurrent,
             method: .GET,
-            headers: headers,
-            responseType: BudgetStatusAPIResponse.self
+            
+            responseType: APIResponse<BudgetStatusResponse>.self
         )
-        .map { [weak self] response in
+        .tryMap { [weak self] response in
+            print("📦 收到预算状态响应: success=\(response.success)")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "获取预算状态失败"
+                print("❌ 获取预算状态失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
             print("✅ 预算状态获取成功")
             
             // 从API响应中提取数据
-            let budgetData = response.data
+            guard let budgetData = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
             
             // 更新当前预算和统计信息
             self?.currentBudget = budgetData.budget
@@ -122,6 +148,14 @@ class BudgetService: ObservableObject {
             print("📊 支出统计: 已花费\(stats.formattedTotalExpenses), 使用率\(stats.usagePercentageString)")
             
             return ()
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                print("❌ 预算数据解析失败: \(error)")
+                return NetworkError.decodingError(error)
+            }
         }
         .eraseToAnyPublisher()
     }
@@ -146,30 +180,200 @@ class BudgetService: ObservableObject {
     }
     
     /**
-     * 删除当前预算
-     * @returns 返回Void的Publisher
+     * 获取预算提醒和预警
+     * GET /api/budget/alerts
      */
-    func deleteBudget() -> AnyPublisher<Void, NetworkError> {
-        print("🗑️ 删除当前预算")
+    func getBudgetAlerts() -> AnyPublisher<BudgetAlertsResponse, NetworkError> {
+        print("⚠️ 获取预算提醒")
         
-        guard let budget = currentBudget else {
-            return Fail(error: NetworkError.serverError("没有预算可删除"))
+        guard let token = getAuthToken() else {
+            print("⚠️ 用户未登录，返回空提醒")
+            let emptyResponse = BudgetAlertsResponse(alerts: [], summary: nil)
+            return Just(emptyResponse)
+                .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
+        
+        return networkManager.request(
+            endpoint: .budgetAlerts,
+            method: .GET,
+            
+            responseType: APIResponse<BudgetAlertsResponse>.self
+        )
+        .tryMap { response in
+            guard response.success else {
+                let errorMessage = response.message ?? "获取预算提醒失败"
+                print("❌ 获取预算提醒失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            guard let data = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
+            print("✅ 获取到 \(data.alerts.count) 个预算提醒")
+            return data
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    /**
+     * 获取预算建议
+     * GET /api/budget/suggestions
+     */
+    func getBudgetSuggestions() -> AnyPublisher<BudgetSuggestionsResponse, NetworkError> {
+        print("💡 获取预算建议")
+        
+        guard let token = getAuthToken() else {
+            print("⚠️ 用户未登录，返回空建议")
+            let emptyResponse = BudgetSuggestionsResponse(suggestions: [], statistics: nil)
+            return Just(emptyResponse)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+        
+        
+        return networkManager.request(
+            endpoint: .budgetSuggestions,
+            method: .GET,
+            
+            responseType: APIResponse<BudgetSuggestionsResponse>.self
+        )
+        .tryMap { response in
+            guard let data = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
+            print("✅ 获取到 \(data.suggestions.count) 个预算建议")
+            return data
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    /**
+     * 获取预算历史记录
+     * GET /api/budget/history
+     */
+    func getBudgetHistory() -> AnyPublisher<BudgetHistoryResponse, NetworkError> {
+        print("📜 获取预算历史")
+        
+        guard let token = getAuthToken() else {
+            print("⚠️ 用户未登录，返回空历史")
+            let emptyResponse = BudgetHistoryResponse(budgets: [])
+            return Just(emptyResponse)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+        
+        
+        return networkManager.request(
+            endpoint: .budgetHistory,
+            method: .GET,
+            
+            responseType: APIResponse<BudgetHistoryResponse>.self
+        )
+        .tryMap { response in
+            guard let data = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
+            print("✅ 获取到 \(data.budgets.count) 条预算历史记录")
+            return data
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    /**
+     * 获取指定月份预算
+     * GET /api/budget/:year/:month
+     */
+    func getBudgetForMonth(year: Int, month: Int) -> AnyPublisher<BudgetMonthResponse, NetworkError> {
+        print("📅 获取\(year)年\(month)月预算")
+        
+        guard let token = getAuthToken() else {
+            print("⚠️ 用户未登录，返回空预算")
+            let emptyResponse = BudgetMonthResponse(budget: nil, totalExpenses: 0)
+            return Just(emptyResponse)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+        
+        
+        return networkManager.request(
+            endpoint: .budgetHistory,
+            pathComponent: "\(year)/\(month)",
+            method: .GET,
+            responseType: APIResponse<BudgetMonthResponse>.self
+        )
+        .tryMap { response in
+            guard let data = response.data else {
+                throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
+            }
+            print("✅ 获取\(year)年\(month)月预算成功")
+            return data
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    /**
+     * 删除指定预算
+     * DELETE /api/budget/:budgetId
+     */
+    func deleteBudget(budgetId: String) -> AnyPublisher<Void, NetworkError> {
+        print("🗑️ 删除预算: ID=\(budgetId)")
+        
         guard let token = getAuthToken() else {
             print("⚠️ 用户未登录，无法删除预算")
-            // 静默返回，不显示错误
             return Just(())
                 .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
         }
         
-        let headers = ["Authorization": "Bearer \(token)"]
         
-        // ❌ 注意：根据API文档，后端暂不支持删除预算功能
-        return Fail(error: NetworkError.serverError("删除预算功能暂未实现"))
-            .eraseToAnyPublisher()
+        return networkManager.request(
+            endpoint: .budgetHistory,
+            pathComponent: budgetId,
+            method: .DELETE,
+            responseType: APIResponse<String>.self
+        )
+        .map { [weak self] _ in
+            print("✅ 预算删除成功")
+            
+            // 如果删除的是当前预算，清空本地数据
+            if self?.currentBudget?.id == budgetId {
+                self?.currentBudget = nil
+                self?.currentStatistics = nil
+            }
+            
+            return ()
+        }
+        .eraseToAnyPublisher()
     }
     
     // MARK: - 辅助方法
@@ -215,9 +419,14 @@ class BudgetService: ObservableObject {
      * 获取认证Token
      */
     private func getAuthToken() -> String? {
-        // 这里需要从AuthService获取token
-        // 假设AuthService有方法获取当前token
-        return UserDefaults.standard.string(forKey: "auth_token")
+        // ✅ 修复：使用与NetworkManager一致的token key
+        let token = UserDefaults.standard.string(forKey: "supabase_access_token")
+        if let token = token {
+            print("🔍 BudgetService获取Token成功")
+        } else {
+            print("🔍 BudgetService获取Token失败，key: supabase_access_token")
+        }
+        return token
     }
     
     /**

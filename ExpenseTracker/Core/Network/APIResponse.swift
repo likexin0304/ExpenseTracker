@@ -1,33 +1,28 @@
 import Foundation
 
 /**
- * API响应基础模型
- * 支持可选的message字段，适配不同类型的API响应
+ * API响应模型
+ * 用于包装API返回的数据
  */
 struct APIResponse<T: Codable>: Codable {
-    /// 请求是否成功
     let success: Bool
-    
-    /// 响应消息（可选，某些接口可能不返回）
+    let data: T?
     let message: String?
+    let error: String?
     
-    /// 响应数据（根据API文档，成功时应该有数据）
-    let data: T
-    
-    /**
-     * 初始化方法
-     */
-    init(success: Bool, message: String? = nil, data: T) {
-        self.success = success
-        self.message = message
-        self.data = data
+    var isSuccess: Bool {
+        return success && data != nil
     }
     
-    /**
-     * 获取消息内容，提供默认值
-     */
-    var displayMessage: String {
-        return message ?? (success ? "操作成功" : "操作失败")
+    var errorMessage: String {
+        return error ?? message ?? "Unknown error"
+    }
+    
+    init(success: Bool, data: T? = nil, message: String? = nil, error: String? = nil) {
+        self.success = success
+        self.data = data
+        self.message = message
+        self.error = error
     }
 }
 
@@ -57,3 +52,8 @@ struct ErrorResponse: Codable {
         self.error = error
     }
 }
+
+// 🚫 移除重复的 init(success:message:)，避免与主初始化器冲突
+
+// Note: OCR-related models have been moved to OCRModels.swift to avoid duplication
+// This file now only contains generic API response structures

@@ -121,15 +121,11 @@ class DataParsingService: ObservableObject {
         
         // 创建识别结果
         let recognitionResult = RecognitionResult(
+            ocrData: ocrData,
             amounts: amounts,
-            description: description,
-            merchantName: merchantName,
-            detectedDate: detectedDate,
-            paymentMethod: paymentMethod,
-            rawText: extractAllText(from: ocrData),
+            merchants: merchantName != nil ? [merchantName!] : [],
             suggestedCategory: categoryResult.category,
-            categoryConfidence: categoryResult.confidence,
-            ocrConfidence: Double(ocrData.confidence)
+            categoryConfidence: categoryResult.confidence
         )
         
         let processingTime = Date().timeIntervalSince(startTime)
@@ -137,7 +133,7 @@ class DataParsingService: ObservableObject {
         print("💰 识别金额: \(amounts)")
         print("🏪 商家名称: \(merchantName ?? "未识别")")
         print("📝 描述: \(description ?? "未识别")")
-        print("🏷️ 推荐分类: \(categoryResult.category.displayName) (置信度: \(String(format: "%.2f", categoryResult.confidence)))")
+        print("🏷️ 推荐分类: \(categoryResult.category) (置信度: \(String(format: "%.2f", categoryResult.confidence)))")
         
         completion(.success(recognitionResult))
     }
@@ -526,10 +522,9 @@ class DataParsingService: ObservableObject {
         print("   所有分类评分: \(detailedScoring)")
         
         return CategorySuggestion(
-            category: bestCategory,
+            category: bestCategory.rawValue,
             confidence: min(bestScore, 1.0), // 确保置信度不超过1.0
-            matchedKeywords: matchedKeywords,
-            reason: reason
+            reasoning: reason
         )
     }
     

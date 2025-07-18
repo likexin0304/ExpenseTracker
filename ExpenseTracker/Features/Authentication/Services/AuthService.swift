@@ -4,14 +4,17 @@ import Combine
 class AuthService: ObservableObject {
     static let shared = AuthService()
     private let networkManager = NetworkManager.shared
-    private let tokenKey = "auth_token"
+    private let tokenKey = "supabase_access_token"
+    private let debugLogger = LoginDebugLogger.shared
     
     @Published var currentUser: User?
     @Published var isAuthenticated = false
     
     private init() {
-        print("🚀 AuthService初始化")
+        print("🚀 AuthService初始化，tokenKey: \(tokenKey)")
+        debugLogger.log("🚀 AuthService初始化，tokenKey: \(tokenKey)")
         print("🔗 将连接到API: \(APIConfig.baseURL)")
+        debugLogger.log("🔗 将连接到API: \(APIConfig.baseURL)")
         loadStoredAuth()
     }
     
@@ -26,20 +29,32 @@ class AuthService: ObservableObject {
         )
         
         return networkManager.request(
-            endpoint: "/auth/register",
+            endpoint: .authRegister,
             method: .POST,
             body: request,
-            responseType: AuthResponse.self
+            responseType: APIResponse<AuthData>.self
         )
-        .map { response in
-            print("📧 注册响应: success=\(response.success)")
-            if response.success {
-                print("✅ 注册成功,保存认证数据")
-                self.saveAuthData(response.data)
-            } else {
-                print("❌ 注册失败: \(response.message ?? "未知错误")")
+        .tryMap { response in
+            print("📦 收到注册响应: success=\(response.success)")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "注册失败"
+                print("❌ 注册失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            print("✅ 注册成功,保存认证数据")
+            if let authData = response.data {
+                self.saveAuthData(authData)
             }
             return ()
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
         }
         .eraseToAnyPublisher()
     }
@@ -47,25 +62,56 @@ class AuthService: ObservableObject {
     // MARK: - 登录
     func login(email: String, password: String) -> AnyPublisher<Void, NetworkError> {
         print("📝 开始登录流程: \(email)")
+        debugLogger.log("📝 开始登录流程: \(email)")
         
         let request = LoginRequest(email: email, password: password)
+        debugLogger.log("📦 创建登录请求: \(request)")
         
         return networkManager.request(
-            endpoint: "/auth/login",
+            endpoint: .authLogin,
             method: .POST,
             body: request,
-            responseType: AuthResponse.self
+            responseType: APIResponse<AuthData>.self
         )
-        .map { response in
-            print("📧 登录响应: success=\(response.success)")
-            if response.success {
-                print("✅ 登录成功,保存认证数据")
-                self.saveAuthData(response.data)
-            } else {
-                print("❌ 登录失败: \(response.message ?? "未知错误")")
+        .tryMap { response in
+            print("📦 收到登录响应: success=\(response.success)")
+            self.debugLogger.log("📦 收到登录响应: success=\(response.success), message=\(response.message ?? "无消息")")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "登录失败"
+                print("❌ 登录失败: \(errorMessage)")
+                self.debugLogger.log("❌ 登录失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            print("✅ 登录成功,保存认证数据")
+            self.debugLogger.log("✅ 登录成功,保存认证数据")
+            
+            if let authData = response.data {
+                self.debugLogger.log("👤 用户数据: \(authData.user)")
+                self.debugLogger.log("🔑 Token: \(authData.token.prefix(20))...")
+                self.saveAuthData(authData)
             }
             return ()
         }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                self.debugLogger.log("❌ 登录解码错误: \(error)")
+                return NetworkError.decodingError(error)
+            }
+        }
+        .handleEvents(
+            receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    self.debugLogger.log("✅ 登录流程完成")
+                case .failure(let error):
+                    self.debugLogger.log("❌ 登录流程失败: \(error)")
+                }
+            }
+        )
         .eraseToAnyPublisher()
     }
     
@@ -82,20 +128,30 @@ class AuthService: ObservableObject {
         let request = DeleteAccountRequest(confirmationText: confirmationText)
         
         return networkManager.request(
-            endpoint: "/auth/account",
+            endpoint: .authDeleteAccount,
             method: .DELETE,
             body: request,
-            responseType: DeleteAccountResponse.self
+            responseType: APIResponse<DeleteAccountResponse>.self
         )
-        .map { response in
+        .tryMap { response in
             print("📧 删除账号响应: success=\(response.success)")
-            if response.success {
-                print("✅ 账号删除成功，清除所有本地数据")
-                self.clearAllData()
-            } else {
-                print("❌ 账号删除失败: \(response.message ?? "未知错误")")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "删除账号失败"
+                print("❌ 删除账号失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
             }
+            
+            print("✅ 账号删除成功，清除所有本地数据")
+            self.clearAllData()
             return ()
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
         }
         .eraseToAnyPublisher()
     }
@@ -125,78 +181,102 @@ class AuthService: ObservableObject {
         print("👤 获取当前用户信息")
         
         return networkManager.request(
-            endpoint: "/auth/me",
+            endpoint: .authMe,
             method: .GET,
-            responseType: UserResponse.self
+            responseType: APIResponse<User>.self
         )
-        .map { response in
-            if response.success {
-                print("✅ 获取用户信息成功")
-                // ✅ 确保UI状态更新在主线程执行
-                DispatchQueue.main.async {
-                    self.currentUser = response.data
+        .tryMap { response in
+            print("✅ 获取用户信息响应: success=\(response.success)")
+            
+            guard response.success else {
+                let errorMessage = response.message ?? "获取用户信息失败"
+                print("❌ 获取用户信息失败: \(errorMessage)")
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            print("✅ 获取用户信息成功")
+            // ✅ 确保UI状态更新在主线程执行
+            DispatchQueue.main.async {
+                if let user = response.data {
+                    self.currentUser = user
                     self.isAuthenticated = true
                     print("✅ 用户信息状态已在主线程更新")
                 }
-            } else {
-                print("❌ 获取用户信息失败")
             }
             return ()
+        }
+        .mapError { error in
+            if let networkError = error as? NetworkError {
+                return networkError
+            } else {
+                return NetworkError.decodingError(error)
+            }
         }
         .eraseToAnyPublisher()
     }
     
     // MARK: - 私有方法
     private func saveAuthData(_ authData: AuthData) {
-        print("💾 开始保存认证数据")
+        print("💾 开始保存认证数据，使用key: \(tokenKey)")
+        debugLogger.log("💾 开始保存认证数据，使用key: \(tokenKey)")
+        
         UserDefaults.standard.set(authData.token, forKey: tokenKey)
+        debugLogger.log("💾 Token已保存到UserDefaults，key: \(tokenKey)")
         
         // ✅ 确保UI状态更新在主线程执行
         DispatchQueue.main.async {
+            self.debugLogger.log("🧵 切换到主线程更新UI状态")
+            
+            let oldUser = self.currentUser
+            let oldAuth = self.isAuthenticated
+            
             self.currentUser = authData.user
             self.isAuthenticated = true
+            
+            self.debugLogger.log("👤 用户状态更新: \(oldUser?.email ?? "nil") -> \(authData.user.email)")
+            self.debugLogger.log("🔐 认证状态更新: \(oldAuth) -> \(self.isAuthenticated)")
+            
             print("✅ UI状态已在主线程更新")
+            self.debugLogger.log("✅ UI状态已在主线程更新")
         }
         
-        print("💾 Token已保存")
+        print("💾 Token已保存到key: \(tokenKey)")
         print("👤 用户已设置: \(authData.user.email)")
+        debugLogger.log("💾 认证数据保存完成")
     }
     
     private func getStoredToken() -> String? {
         let token = UserDefaults.standard.string(forKey: tokenKey)
-        if let token = token {
-            print("🔍 读取本地Token成功")
+        if token != nil {
+            print("🔑 找到存储的Token: \(String(describing: token?.prefix(10)))...")
         } else {
-            print("🔍 读取本地Token: 无Token")
+            print("🔑 未找到存储的Token")
         }
         return token
     }
     
     private func loadStoredAuth() {
-        print("🔄 开始检查本地认证状态")
+        print("🔄 尝试加载存储的认证数据")
         
         if let token = getStoredToken() {
-            print("✅ 发现本地Token,开始验证有效性")
-            // 有token,尝试获取用户信息
-            getCurrentUser()
-                .sink(
-                    receiveCompletion: { [weak self] completion in
-                        if case .failure(let error) = completion {
-                            print("❌ Token验证失败: \(error.localizedDescription)")
-                            print("🧹 清除无效Token")
-                            // token无效,清除本地数据
-                            self?.logout()
-                        }
-                    },
-                    receiveValue: { [weak self] _ in
-                        print("✅ Token验证成功,用户已自动登录")
+            print("✅ 找到Token，设置已认证状态")
+            isAuthenticated = true
+            
+            // 尝试获取用户信息
+            _ = getCurrentUser()
+                .sink(receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ 加载用户信息失败: \(error)")
+                        // 如果获取用户信息失败，清除认证状态
+                        self.clearAllData()
                     }
-                )
-                .store(in: &cancellables)
+                }, receiveValue: { _ in
+                    print("✅ 用户信息已加载")
+                })
+                .store(in: &LoginDebugLogger.shared.cancellables)
         } else {
-            print("❌ 未发现本地Token,需要用户登录")
+            print("⚠️ 未找到Token，用户未登录")
+            isAuthenticated = false
         }
     }
-    
-    private var cancellables = Set<AnyCancellable>()
 }

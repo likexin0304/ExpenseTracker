@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 
 /// 支出视图模型
 class ExpenseViewModel: ObservableObject {
@@ -158,19 +159,44 @@ class ExpenseViewModel: ObservableObject {
     
     /// 删除支出记录
     func deleteExpense(_ expense: Expense) {
-        print("🗑️ 删除支出记录: \(expense.id)")
+        print("🗑️ 删除支出记录: ID=\(expense.id), 描述=\(expense.description)")
+        print("🔍 完整ID长度: \(expense.id.count) 字符")
         
+        // 验证ID格式
+        guard !expense.id.isEmpty && expense.id.count > 10 else {
+            print("❌ 无效的支出ID: \(expense.id)")
+            errorMessage = "删除失败：无效的支出记录ID"
+            showingError = true
+            return
+        }
+        
+        // 先调用API删除，成功后再更新UI（避免乐观更新导致的UI冲突）
         expenseService.deleteExpense(expenseId: expense.id)
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
+                        print("❌ 支出删除失败: \(error)")
                         self?.handleError(error)
                     }
                 },
                 receiveValue: { [weak self] _ in
-                    self?.expenses.removeAll { $0.id == expense.id }
-                    print("✅ 支出记录删除成功")
+                    print("✅ 支出记录删除成功，开始更新UI")
+                    
+                    // 删除成功后，使用动画更新UI
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        self?.expenses.removeAll { $0.id == expense.id }
+                    }
+                    
+                    // 发送通知给其他页面（如预算页面）更新统计数据
+                    NotificationCenter.default.post(
+                        name: .expenseDataChanged,
+                        object: nil,
+                        userInfo: [
+                            "operationType": "delete",
+                            "skipRefresh": true // 跳过当前页面的刷新
+                        ]
+                    )
                 }
             )
             .store(in: &cancellables)
@@ -276,10 +302,18 @@ class ExpenseViewModel: ObservableObject {
             queue: .main
         ) { [weak self] notification in
             print("📢 ExpenseViewModel收到支出数据变化通知")
-            if let operationType = notification.userInfo?[NotificationUserInfoKeys.operationType] as? String {
+            if let operationType = notification.userInfo?["operationType"] as? String {
                 print("📊 操作类型: \(operationType)")
-                // 无论是创建、更新还是删除支出，都需要刷新支出列表
-                self?.loadExpenses(refresh: true)
+                
+                // 检查是否需要跳过刷新
+                let skipRefresh = notification.userInfo?["skipRefresh"] as? Bool ?? false
+                
+                if !skipRefresh {
+                    // 只有在不跳过刷新时才重新加载数据
+                    self?.loadExpenses(refresh: true)
+                } else {
+                    print("🚫 跳过数据刷新，保持当前UI状态")
+                }
             }
         }
     }

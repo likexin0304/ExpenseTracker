@@ -1,227 +1,170 @@
 import Foundation
+import SwiftUI
 import Combine
 
+/**
+ * 认证视图模型
+ * 处理登录、注册、账户管理等认证相关功能
+ */
 class AuthViewModel: ObservableObject {
-    @Published var email = ""
-    @Published var password = ""
-    @Published var confirmPassword = ""
+    // MARK: - 共享实例
+    static let shared = AuthViewModel()
+    
+    // MARK: - 服务依赖
+    private let authService = AuthService.shared
+    
+    // MARK: - 发布属性
+    @Published var currentUser: User?
+    @Published var isAuthenticated = false
     @Published var isLoading = false
     @Published var errorMessage = ""
-    @Published var isAuthenticated = false
     
-    // 删除账号相关状态
-    @Published var isDeletingAccount = false
-    @Published var deleteAccountErrorMessage = ""
+    // MARK: - 登录相关状态
+    @Published var email = ""
+    @Published var password = ""
+    @Published var isLoginMode = true
     
-    private let authService = AuthService.shared
+    // MARK: - 注册相关状态
+    @Published var confirmPassword = ""
+    @Published var username = ""
+    
+    // MARK: - 取消令牌
     private var cancellables = Set<AnyCancellable>()
     
+    // MARK: - 初始化
     init() {
-        print("🔵 AuthViewModel 初始化")
-        setupAuthStateListener()
+        setupBindings()
+        checkAuthStatus()
     }
     
-    deinit {
-        print("🔴 AuthViewModel 即将释放")
-        cancellables.removeAll()
-    }
-    
-    // MARK: - 注册
-    func register() {
-        print("🔵 AuthViewModel.register() 被调用")
-        print("📧 邮箱: \(email), 密码长度: \(password.count)")
-        
-        guard validateRegistrationInput() else { 
-            print("❌ 注册表单验证失败")
-            return 
-        }
-        
-        print("✅ 注册表单验证通过，开始调用AuthService")
-        isLoading = true
-        errorMessage = ""
-        
-        authService.register(
-            email: email,
-            password: password,
-            confirmPassword: confirmPassword
-        )
-        .receive(on: DispatchQueue.main)
-        .sink(
-            receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    self?.errorMessage = error.localizedDescription
-                }
-            },
-            receiveValue: { [weak self] _ in
-                self?.clearForm()
+    // MARK: - 绑定设置
+    private func setupBindings() {
+        authService.$currentUser
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] user in
+                self?.currentUser = user
+                self?.isAuthenticated = user != nil
             }
-        )
-        .store(in: &cancellables)
+            .store(in: &cancellables)
     }
     
-    // MARK: - 登录
+    // MARK: - 认证操作
     func login() {
-        print("🔵 AuthViewModel.login() 被调用")
-        
-        guard validateLoginInput() else {
-            print("❌ 登录表单验证失败")
-            return
-        }
-        
-        print("✅ 登录表单验证通过，开始调用AuthService")
         isLoading = true
         errorMessage = ""
         
         authService.login(email: email, password: password)
             .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self = self else { return }
-                    
-                    self.isLoading = false
-                    
-                    if case .failure(let error) = completion {
-                        print("❌ 登录失败: \(error.localizedDescription)")
-                        self.errorMessage = error.localizedDescription
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                
+                if case .failure(let error) = completion {
+                    if let networkError = error as? NetworkError {
+                        self?.errorMessage = networkError.localizedDescription
+                    } else {
+                        self?.errorMessage = error.localizedDescription
                     }
-                },
-                receiveValue: { [weak self] _ in
-                    guard let self = self else { return }
-                    
-                    print("✅ 登录成功")
-                    self.clearForm()
                 }
-            )
+            }, receiveValue: { [weak self] _ in
+                self?.clearForm()
+            })
             .store(in: &cancellables)
     }
     
-    // MARK: - 登出
+    func register() {
+        guard validateRegistration() else { return }
+        
+        isLoading = true
+        errorMessage = ""
+        
+        authService.register(email: email, password: password, confirmPassword: confirmPassword)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                
+                if case .failure(let error) = completion {
+                    if let networkError = error as? NetworkError {
+                        self?.errorMessage = networkError.localizedDescription
+                    } else {
+                        self?.errorMessage = error.localizedDescription
+                    }
+                }
+            }, receiveValue: { [weak self] _ in
+                self?.clearForm()
+                self?.isLoginMode = true
+            })
+            .store(in: &cancellables)
+    }
+    
     func logout() {
         authService.logout()
         clearForm()
     }
     
-    // MARK: - 删除账号
-    func deleteAccount(confirmationText: String) {
-        print("🔵 AuthViewModel.deleteAccount() 被调用")
-        print("🗑️ 确认文本: \(confirmationText)")
-        
-        guard !confirmationText.isEmpty else {
-            deleteAccountErrorMessage = "请输入确认文本"
-            return
-        }
-        
-        guard confirmationText.contains("我确认") else {
-            deleteAccountErrorMessage = "请输入包含「我确认」的文本"
-            return
-        }
-        
-        print("✅ 删除账号验证通过，开始调用AuthService")
-        isDeletingAccount = true
-        deleteAccountErrorMessage = ""
-        
-        authService.deleteAccount(confirmationText: confirmationText)
+    func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void) {
+        authService.deleteAccount(confirmationText: "DELETE")
             .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self = self else { return }
-                    
-                    self.isDeletingAccount = false
-                    
-                    if case .failure(let error) = completion {
-                        print("❌ 删除账号失败: \(error.localizedDescription)")
-                        self.deleteAccountErrorMessage = error.localizedDescription
-                    }
-                },
-                receiveValue: { [weak self] _ in
-                    guard let self = self else { return }
-                    
-                    print("✅ 账号删除成功")
-                    // 删除成功后会自动触发登出，不需要手动处理
+            .sink(receiveCompletion: { completionResult in
+                switch completionResult {
+                case .finished:
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
                 }
-            )
+            }, receiveValue: { _ in })
             .store(in: &cancellables)
     }
     
-    // MARK: - 清除删除账号表单
-    func clearDeleteAccountForm() {
-        deleteAccountErrorMessage = ""
-        isDeletingAccount = false
+    func checkAuthStatus() {
+        // 检查是否有保存的用户信息
+        if authService.isAuthenticated {
+            // 如果已经有用户信息，直接更新状态
+            self.isAuthenticated = true
+            self.currentUser = authService.currentUser
+        } else {
+            // 尝试获取最新的用户信息
+            authService.getCurrentUser()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+                .store(in: &cancellables)
+        }
     }
     
-    // MARK: - 验证方法
-    private func validateRegistrationInput() -> Bool {
-        if email.isEmpty || password.isEmpty || confirmPassword.isEmpty {
-            errorMessage = "请填写所有字段"
-            return false
-        }
+    // MARK: - 辅助方法
+    private func validateRegistration() -> Bool {
+        errorMessage = ""
         
-        if !isValidEmail(email) {
-            errorMessage = "请输入有效的邮箱地址"
-            return false
-        }
-        
-        if password.count < 6 {
-            errorMessage = "密码长度至少6位"
-            return false
-        }
-        
+        // 检查密码是否匹配
         if password != confirmPassword {
-            errorMessage = "两次输入的密码不一致"
+            errorMessage = "两次输入的密码不匹配"
             return false
         }
         
-        return true
-    }
-    
-    private func validateLoginInput() -> Bool {
-        if email.isEmpty {
-            errorMessage = "请输入邮箱"
-            return false
-        }
-        
-        if !email.contains("@") {
-            errorMessage = "请输入有效的邮箱地址"
-            return false
-        }
-        
-        if password.isEmpty {
-            errorMessage = "请输入密码"
-            return false
-        }
-        
+        // 检查密码长度
         if password.count < 6 {
-            errorMessage = "密码至少需要6位"
+            errorMessage = "密码必须至少包含6个字符"
+            return false
+        }
+        
+        // 检查用户名
+        if username.isEmpty {
+            errorMessage = "请输入用户名"
             return false
         }
         
         return true
     }
     
-    private func isValidEmail(_ email: String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailPred.evaluate(with: email)
-    }
-    
-    // MARK: - 私有方法
-    private func setupAuthStateListener() {
-        // 监听认证状态变化
-        authService.$isAuthenticated
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isAuthenticated in
-                guard let self = self else { return }
-                self.isAuthenticated = isAuthenticated
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func clearForm() {
+    func clearForm() {
         email = ""
         password = ""
         confirmPassword = ""
+        username = ""
         errorMessage = ""
-        deleteAccountErrorMessage = ""
+    }
+    
+    func switchMode() {
+        isLoginMode.toggle()
+        clearForm()
     }
 }

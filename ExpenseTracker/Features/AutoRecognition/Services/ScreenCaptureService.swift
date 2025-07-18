@@ -40,7 +40,7 @@ class ScreenCaptureService: ObservableObject {
         guard #available(iOS 11.0, *) else {
             print("❌ 系统版本过低，不支持屏幕录制")
             await MainActor.run {
-                permissionStatus = .notSupported
+                permissionStatus = .denied
             }
             return false
         }

@@ -115,8 +115,13 @@ enum ExpenseCategory: String, CaseIterable, Codable, Identifiable {
 /// 支付方式枚举
 enum PaymentMethod: String, CaseIterable, Codable, Identifiable {
     case cash = "cash"
-    case card = "card"
-    case online = "online"
+    case card = "card"           // 银行卡（默认）
+    case online = "online"       // 在线（通用）
+    case creditCard = "credit_card"  // 信用卡
+    case debitCard = "debit_card"    // 借记卡
+    case alipay = "alipay"           // 支付宝
+    case wechatPay = "wechat_pay"    // 微信支付
+    case bankTransfer = "bank_transfer" // 银行转账
     case other = "other"
     
     var id: String { rawValue }
@@ -126,10 +131,16 @@ enum PaymentMethod: String, CaseIterable, Codable, Identifiable {
         switch self {
         case .cash:
             return "现金"
-        case .card:
-            return "银行卡"
+        case .card, .debitCard, .creditCard:
+            return self == .creditCard ? "信用卡" : (self == .debitCard ? "借记卡" : "银行卡")
         case .online:
             return "在线支付"
+        case .alipay:
+            return "支付宝"
+        case .wechatPay:
+            return "微信支付"
+        case .bankTransfer:
+            return "银行转账"
         case .other:
             return "其他"
         }
@@ -140,10 +151,18 @@ enum PaymentMethod: String, CaseIterable, Codable, Identifiable {
         switch self {
         case .cash:
             return "banknote"
-        case .card:
+        case .card, .creditCard:
             return "creditcard"
+        case .debitCard:
+            return "creditcard.fill"
         case .online:
             return "iphone"
+        case .alipay:
+            return "a.circle"
+        case .wechatPay:
+            return "w.circle"
+        case .bankTransfer:
+            return "arrow.left.arrow.right"
         case .other:
             return "questionmark.circle"
         }
@@ -154,10 +173,18 @@ enum PaymentMethod: String, CaseIterable, Codable, Identifiable {
         switch self {
         case .cash:
             return .green
-        case .card:
+        case .card, .creditCard:
             return .blue
+        case .debitCard:
+            return .mint
         case .online:
             return .purple
+        case .alipay:
+            return .orange
+        case .wechatPay:
+            return .green
+        case .bankTransfer:
+            return .indigo
         case .other:
             return .gray
         }

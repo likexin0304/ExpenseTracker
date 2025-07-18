@@ -2,8 +2,8 @@ import Foundation
 
 /// 支出记录数据模型 - 与API文档完全匹配
 struct Expense: Codable, Identifiable, Hashable {
-    let id: Int
-    let userId: Int
+    let id: String
+    let userId: String
     let amount: Double
     let category: String
     let description: String
@@ -26,8 +26,8 @@ struct Expense: Codable, Identifiable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         // 必需字段
-        id = try container.decode(Int.self, forKey: .id)
-        userId = try container.decode(Int.self, forKey: .userId)
+        id = try container.decode(String.self, forKey: .id)
+        userId = try container.decode(String.self, forKey: .userId)
         amount = try container.decode(Double.self, forKey: .amount)
         category = try container.decode(String.self, forKey: .category)
         description = try container.decode(String.self, forKey: .description)
@@ -116,10 +116,10 @@ struct CreateExpenseRequest: Codable {
         self.paymentMethod = paymentMethod
         self.tags = tags
         
-        // 转换日期为ISO8601字符串
+        // 转换日期为ISO8601字符串（不包含毫秒）
         if let date = date {
             let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter.formatOptions = [.withInternetDateTime] // 移除 .withFractionalSeconds
             self.date = formatter.string(from: date)
         } else {
             self.date = nil
@@ -147,10 +147,10 @@ struct UpdateExpenseRequest: Codable {
         self.paymentMethod = paymentMethod
         self.tags = tags
         
-        // 转换日期为ISO8601字符串
+        // 转换日期为ISO8601字符串（不包含毫秒）
         if let date = date {
             let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter.formatOptions = [.withInternetDateTime] // 移除 .withFractionalSeconds
             self.date = formatter.string(from: date)
         } else {
             self.date = nil
@@ -199,8 +199,8 @@ typealias ExpensesData = ExpensesListResponse
 extension Expense {
     static let mockData: [Expense] = [
         Expense(
-            id: 1,
-            userId: 1,
+            id: "1",
+            userId: "1",
             amount: 25.50,
             category: "food",
             description: "午餐",
@@ -212,8 +212,8 @@ extension Expense {
             updatedAt: Date()
         ),
         Expense(
-            id: 2,
-            userId: 1,
+            id: "2",
+            userId: "1",
             amount: 120.00,
             category: "transport",
             description: "打车回家",
@@ -225,8 +225,8 @@ extension Expense {
             updatedAt: Date()
         ),
         Expense(
-            id: 3,
-            userId: 1,
+            id: "3",
+            userId: "1",
             amount: 89.90,
             category: "shopping",
             description: "买书",
@@ -246,7 +246,7 @@ extension Expense {
 }
 
 extension Expense {
-    init(id: Int, userId: Int, amount: Double, category: String, 
+    init(id: String, userId: String, amount: Double, category: String, 
          description: String, date: Date, location: String? = nil,
          paymentMethod: String = "cash", tags: [String] = [],
          createdAt: Date, updatedAt: Date) {
@@ -264,3 +264,44 @@ extension Expense {
     }
 }
 #endif
+
+// MARK: - 新增API响应模型
+
+/// 支出导出响应模型
+struct ExpenseExportResponse: Codable {
+    let exportInfo: ExportInfo
+    let expenses: [Expense]
+}
+
+struct ExportInfo: Codable {
+    let exportDate: String
+    let totalRecords: Int
+    let dateRange: DateRange
+    let category: String
+}
+
+struct DateRange: Codable {
+    let start: String
+    let end: String
+}
+
+/// 支出趋势响应模型
+struct ExpenseTrendsResponse: Codable {
+    let period: String
+    let trends: [ExpenseTrend]
+    let analysis: ExpenseTrendAnalysis?
+}
+
+struct ExpenseTrend: Codable {
+    let period: String
+    let totalAmount: Double
+    let count: Int
+    let categories: [String: Double]
+}
+
+struct ExpenseTrendAnalysis: Codable {
+    let totalPeriods: Int
+    let averagePerPeriod: Double
+    let highestPeriod: ExpenseTrend
+    let lowestPeriod: ExpenseTrend
+}

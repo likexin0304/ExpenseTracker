@@ -1,7 +1,42 @@
 import SwiftUI
 
+// 模拟处理状态枚举
+enum MockProcessingState {
+    case idle
+    case waitingForConfirmation
+    case capturingScreen
+    case recognizing
+    case parsing
+    case success(MockRecognitionResult)
+    case failed(String)
+    case cancelled
+}
+
+// 模拟识别结果
+struct MockRecognitionResult {
+    let merchantName: String
+    let amount: Double
+    let category: MockExpenseCategory
+    let transactionDate: Date
+    let note: String?
+    let confidence: Double
+}
+
+// 模拟费用分类
+enum MockExpenseCategory: String, CaseIterable {
+    case food = "餐饮"
+    case transport = "交通"
+    case shopping = "购物"
+    case entertainment = "娱乐"
+    case health = "医疗"
+    case education = "教育"
+    case housing = "住房"
+    case utilities = "水电费"
+    case other = "其他"
+}
+
 struct RecognitionProgressView: View {
-    let state: AutoRecognitionState
+    let state: MockProcessingState
     let progress: Double
     let progressMessage: String
     let onCancel: () -> Void
@@ -40,7 +75,7 @@ struct RecognitionProgressView: View {
             actionButtons
         }
         .padding(24)
-        .background(Color(.systemBackground))
+        .background(Color.white)
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         .frame(maxWidth: 300)
@@ -218,7 +253,7 @@ struct CountdownView: View {
 
 // MARK: - 浮动状态指示器
 struct FloatingStatusIndicator: View {
-    let state: AutoRecognitionState
+    let state: MockProcessingState
     let isEnabled: Bool
     
     @State private var rotationAngle: Double = 0
@@ -258,7 +293,7 @@ struct FloatingStatusIndicator: View {
                         rotationAngle = 360
                     }
                 }
-        case .success:
+        case .success(_):
             Image(systemName: "checkmark.circle.fill")
                 .font(.caption)
         case .failed(_):
@@ -344,7 +379,14 @@ struct RecognitionProgressView_Previews: PreviewProvider {
             .previewDisplayName("识别中")
             
             RecognitionProgressView(
-                state: .success(RecognitionResult(amounts: [25.80], rawText: "测试", suggestedCategory: .food)),
+                state: .success(MockRecognitionResult(
+                    merchantName: "测试商户",
+                    amount: 25.80,
+                    category: .food,
+                    transactionDate: Date(),
+                    note: nil,
+                    confidence: 0.9
+                )),
                 progress: 1.0,
                 progressMessage: "识别完成",
                 onCancel: {}
@@ -361,8 +403,15 @@ struct FloatingStatusIndicator_Previews: PreviewProvider {
         VStack(spacing: 10) {
             FloatingStatusIndicator(state: .idle, isEnabled: true)
             FloatingStatusIndicator(state: .recognizing, isEnabled: true)
-            FloatingStatusIndicator(state: .success(RecognitionResult(amounts: [25.80], rawText: "测试", suggestedCategory: .food)), isEnabled: true)
-            FloatingStatusIndicator(state: .failed(.ocrFailed("识别失败")), isEnabled: true)
+            FloatingStatusIndicator(state: .success(MockRecognitionResult(
+                merchantName: "测试商户",
+                amount: 25.80,
+                category: .food,
+                transactionDate: Date(),
+                note: nil,
+                confidence: 0.9
+            )), isEnabled: true)
+            FloatingStatusIndicator(state: .failed("识别失败"), isEnabled: true)
         }
         .padding()
     }

@@ -152,6 +152,66 @@ struct BudgetHistoryResponse: Codable {
     let budgets: [Budget]
 }
 
+// MARK: - 预算提醒响应模型
+struct BudgetAlertsResponse: Codable {
+    let alerts: [BudgetAlert]
+    let summary: BudgetAlertSummary?
+}
+
+struct BudgetAlert: Codable {
+    let type: String
+    let level: String
+    let title: String
+    let message: String
+    let percentage: Double?
+    let icon: String
+}
+
+struct BudgetAlertSummary: Codable {
+    let budgetAmount: Double
+    let totalExpenses: Double
+    let usagePercentage: Double
+    let remainingDays: Int
+    let dailyAverage: Double
+    let projectedMonthlySpend: Double
+}
+
+// MARK: - 预算建议响应模型
+struct BudgetSuggestionsResponse: Codable {
+    let suggestions: [BudgetSuggestion]
+    let statistics: BudgetSuggestionStatistics?
+}
+
+struct BudgetSuggestion: Codable {
+    let type: String
+    let title: String
+    let message: String
+    let icon: String
+    let data: BudgetSuggestionData?
+}
+
+struct BudgetSuggestionData: Codable {
+    let suggestedAmount: Double?
+    let averageSpend: Double?
+    let basis: String?
+    let category: String?
+    let amount: Double?
+    let percentage: Double?
+}
+
+struct BudgetSuggestionStatistics: Codable {
+    let totalMonths: Int
+    let averageMonthlySpend: Double
+    let suggestedBudget: Double
+    let topCategory: String
+}
+
+// MARK: - 指定月份预算响应模型
+struct BudgetMonthResponse: Codable {
+    let budget: Budget?
+    let totalExpenses: Double
+}
+
 // MARK: - 扩展方法
 extension BudgetStatistics {
     /**

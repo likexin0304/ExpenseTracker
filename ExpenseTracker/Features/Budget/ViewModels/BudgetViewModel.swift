@@ -157,10 +157,18 @@ class BudgetViewModel: ObservableObject {
             return
         }
         
+        // 获取当前年份和月份
+        let calendar = Calendar.current
+        let now = Date()
+        let currentYear = calendar.component(.year, from: now)
+        let currentMonth = calendar.component(.month, from: now)
+        
+        print("💰 设置预算参数: amount=\(amount), year=\(currentYear), month=\(currentMonth)")
+        
         isLoading = true
         errorMessage = ""
         
-        budgetService.setBudget(amount: amount)
+        budgetService.setBudget(amount: amount, year: currentYear, month: currentMonth)
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
@@ -228,14 +236,14 @@ class BudgetViewModel: ObservableObject {
     func deleteBudget() {
         print("🗑️ 删除当前预算")
         
-        guard currentBudget != nil else {
+        guard let budget = currentBudget else {
             showErrorMessage("没有预算可删除")
             return
         }
         
         isLoading = true
         
-        budgetService.deleteBudget()
+        budgetService.deleteBudget(budgetId: budget.id)
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
@@ -249,6 +257,9 @@ class BudgetViewModel: ObservableObject {
                     print("✅ 预算删除成功")
                     self?.isLoading = false
                     self?.showSuccessMessage("预算已删除")
+                    // 清除当前预算数据
+                    self?.currentBudget = nil
+                    self?.statistics = nil
                 }
             )
             .store(in: &cancellables)

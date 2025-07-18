@@ -317,7 +317,7 @@ class AutoRecognitionTestService: ObservableObject {
             
             switch parseResult {
             case .success(let recognitionResult):
-                let isCorrect = recognitionResult.suggestedCategory == expectedCategory
+                let isCorrect = recognitionResult.suggestedCategory == expectedCategory.rawValue
                 
                 return TestResult(
                     testCase: testCase,
@@ -641,6 +641,18 @@ class PerformanceMonitor {
     }
     
     func getCurrentMemoryUsage() -> Double {
+        // 确保在主线程上执行内存监控代码，避免RunLoop错误
+        if !Thread.isMainThread {
+            var result: Double = 0
+            DispatchQueue.main.sync {
+                result = self.getCurrentMemoryUsageInternal()
+            }
+            return result
+        }
+        return getCurrentMemoryUsageInternal()
+    }
+    
+    private func getCurrentMemoryUsageInternal() -> Double {
         // 简化的内存使用计算
         var info = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4

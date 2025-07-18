@@ -9,5 +9,38 @@
 	</dict>
 	<key>NSScreenCaptureDescription</key>
 	<string>需要屏幕录制权限来识别账单信息，帮助您快速记录支出</string>
+	<key>SUPABASE_URL</key>
+	<string>https://nlrtjnvwgsaavtpfccxg.supabase.co</string>
+	<key>SUPABASE_ANON_KEY</key>
+	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5scnRqbnZ3Z3NhYXZ0cGZjY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzU3MDgsImV4cCI6MjA2NTY1MTcwOH0.5r2tzDOV1T1Lkz_Mtujq35VBBfo77SCh6H__rUSHQCo</string>
+	<key>API_BASE_URL</key>
+	<string>https://expense-tracker-backend-mocrhvaay-likexin0304s-projects.vercel.app</string>
+	
+	<!-- URL Scheme配置 -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.expensetracker.urlscheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>expensetracker</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- 后台处理权限 -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>background-processing</string>
+		<string>background-fetch</string>
+	</array>
+	
+	<!-- 应用支持的设备方向 -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
 </dict>
 </plist>

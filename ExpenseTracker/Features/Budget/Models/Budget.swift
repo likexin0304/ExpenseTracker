@@ -6,10 +6,10 @@ import Foundation
  */
 struct Budget: Codable, Identifiable {
     /// 预算唯一标识符
-    let id: Int
+    let id: String
     
     /// 所属用户ID
-    let userId: Int
+    let userId: String
     
     /// 预算金额
     let amount: Double
@@ -68,8 +68,8 @@ extension Budget {
      * @returns Budget对象，如果创建失败则返回nil
      */
     static func from(dict: [String: Any]) -> Budget? {
-        guard let id = dict["id"] as? Int,
-              let userId = dict["userId"] as? Int,
+        guard let id = dict["id"] as? String,
+              let userId = dict["userId"] as? String,
               let amount = dict["amount"] as? Double,
               let year = dict["year"] as? Int,
               let month = dict["month"] as? Int,

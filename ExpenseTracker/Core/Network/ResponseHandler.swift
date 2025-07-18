@@ -28,11 +28,12 @@ class ResponseHandler {
             let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             
             guard let jsonDict = json else {
-                return .failure(.decodingError)
+                return .failure(.decodingError(NSError(domain: "ResponseHandler", code: 100, userInfo: [NSLocalizedDescriptionKey: "无法解析为JSON字典"])))
             }
             
             let success = jsonDict["success"] as? Bool ?? false
             let message = jsonDict["message"] as? String // 可选
+            let errorMessage = jsonDict["error"] as? String // 可选错误信息
             
             // 尝试解析data字段
             var responseData: T? = nil
@@ -41,12 +42,16 @@ class ResponseHandler {
                 responseData = try? decoder.decode(T.self, from: dataJsonData)
             }
             
-            let response = APIResponse<T>(success: success, message: message, data: responseData!)
-            return .success(response)
+            if let responseData = responseData {
+                let response = APIResponse<T>(success: success, data: responseData, message: message, error: errorMessage)
+                return .success(response)
+            } else {
+                return .failure(.decodingError(NSError(domain: "ResponseHandler", code: 101, userInfo: [NSLocalizedDescriptionKey: "无法解析数据字段"])))
+            }
             
         } catch {
             print("❌ 智能解析也失败了: \(error)")
-            return .failure(.decodingError)
+            return .failure(.decodingError(error))
         }
     }
 }

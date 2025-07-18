@@ -14,95 +14,20 @@ struct ContentView: View {
         Group {
             if authService.isAuthenticated {
                 // 已登录：显示主应用界面
-                MainAppView()
+                MainTabView()
                     .environmentObject(budgetViewModel)
+                    .onAppear {
+                        print("✅ 显示主应用界面 - 用户已认证")
+                        print("👤 当前用户: \(authService.currentUser?.email ?? "nil")")
+                    }
             } else {
                 // 未登录：显示认证界面
                 AuthenticationView()
+                    .onAppear {
+                        print("🔐 显示认证界面 - 用户未认证")
+                    }
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: authService.isAuthenticated)
-        .onAppear {
-            print("📱 ContentView出现")
-        }
-    }
-}
-
-/**
- * 主应用视图
- * 包含底部导航栏的完整应用界面
- */
-struct MainAppView: View {
-    // MARK: - 状态管理
-    @EnvironmentObject var budgetViewModel: BudgetViewModel
-    @StateObject private var authViewModel = AuthViewModel()
-    @State private var selectedTab = 0
-    
-    var body: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-                // 首页
-                HomeView(selectedTab: $selectedTab)
-                    .tabItem {
-                        Image(systemName: selectedTab == 0 ? "house.fill" : "house")
-                        Text("首页")
-                    }
-                    .tag(0)
-                
-                // 支出记录
-                ExpenseListView()
-                    .tabItem {
-                        Image(systemName: selectedTab == 1 ? "list.bullet.clipboard.fill" : "list.bullet.clipboard")
-                        Text("记录")
-                    }
-                    .tag(1)
-                
-                // 添加支出
-                AddExpenseView(selectedTab: $selectedTab)
-                    .tabItem {
-                        Image(systemName: selectedTab == 2 ? "plus.circle.fill" : "plus.circle")
-                        Text("添加")
-                    }
-                    .tag(2)
-                
-                // 预算管理
-                SetBudgetView(viewModel: budgetViewModel)
-                    .tabItem {
-                        Image(systemName: selectedTab == 3 ? "chart.pie.fill" : "chart.pie")
-                        Text("预算")
-                    }
-                    .tag(3)
-                
-                // 设置
-                SettingsView()
-                    .environmentObject(authViewModel)
-                    .tabItem {
-                        Image(systemName: selectedTab == 4 ? "gearshape.fill" : "gearshape")
-                        Text("设置")
-                    }
-                    .tag(4)
-            }
-            .accentColor(.systemBlue)
-            
-            // 自动识别功能覆盖层
-            AutoRecognitionView()
-                .allowsHitTesting(false) // 不阻止底层交互
-        }
-        .onAppear {
-            // 配置TabBar外观
-            configureTabBarAppearance()
-        }
-    }
-    
-    // MARK: - TabBar外观配置
-    private func configureTabBarAppearance() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.systemBackground
-        // 设置选中状态的颜色
-        appearance.selectionIndicatorTintColor = UIColor.systemBlue
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 
@@ -163,287 +88,6 @@ struct ExpenseStatsView: View {
         }
         .onAppear {
             statsViewModel.loadStats()
-        }
-    }
-}
-
-/**
- * 设置视图
- */
-struct SettingsView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject private var budgetService = BudgetService.shared
-    @StateObject private var autoRecognitionViewModel = AutoRecognitionViewModel()
-    @State private var showingDeleteAccountConfirmation = false
-    
-    var body: some View {
-        NavigationView {
-            List {
-                // 用户信息区域
-                userProfileSection
-                
-                // 预算设置区域
-                budgetSettingsSection
-                
-                // 应用设置区域
-                appSettingsSection
-                
-                // 关于区域
-                aboutSection
-                
-                // 账号管理区域
-                accountManagementSection
-            }
-            .navigationTitle("设置")
-            .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingDeleteAccountConfirmation) {
-                AccountDeletionConfirmationView(
-                    authViewModel: authViewModel,
-                    isPresented: $showingDeleteAccountConfirmation
-                )
-            }
-        }
-    }
-    
-    // MARK: - 用户信息区域
-    private var userProfileSection: some View {
-        Section {
-            HStack(spacing: 16) {
-                // 用户头像
-                Circle()
-                    .fill(Color.blue.opacity(0.2))
-                    .frame(width: 60, height: 60)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .font(.title2)
-                            .foregroundColor(.blue)
-                    )
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(AuthService.shared.currentUser?.email ?? "未知用户")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                    
-                    Text("记账用户")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-            }
-            .padding(.vertical, 8)
-        } header: {
-            Text("用户信息")
-        }
-    }
-    
-    // MARK: - 预算设置区域
-    private var budgetSettingsSection: some View {
-        Section {
-            HStack {
-                Image(systemName: "chart.pie.fill")
-                    .foregroundColor(.blue)
-                    .frame(width: 24)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("当前预算")
-                        .font(.body)
-                    
-                    if budgetService.hasBudget {
-                        Text(budgetService.formatCurrency(budgetService.currentBudgetAmount))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    } else {
-                        Text("未设置")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
-                Spacer()
-                
-                Text(budgetService.hasBudget ? "修改" : "设置")
-                    .font(.subheadline)
-                    .foregroundColor(.blue)
-            }
-            
-            HStack {
-                Image(systemName: "bell.fill")
-                    .foregroundColor(.orange)
-                    .frame(width: 24)
-                
-                Text("预算提醒")
-                
-                Spacer()
-                
-                Toggle("", isOn: .constant(true))
-                    .labelsHidden()
-            }
-        } header: {
-            Text("预算设置")
-        }
-    }
-    
-    // MARK: - 应用设置区域
-    private var appSettingsSection: some View {
-        Section {
-            // 自动识别账单功能
-            HStack {
-                Image(systemName: "doc.text.viewfinder")
-                    .foregroundColor(.blue)
-                    .frame(width: 24)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("自动识别账单")
-                        .font(.body)
-                    
-                    Text("背面敲击3下识别屏幕上的账单信息")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Toggle("", isOn: $autoRecognitionViewModel.isEnabled)
-                    .labelsHidden()
-                    .onChange(of: autoRecognitionViewModel.isEnabled) { _, newValue in
-                        if newValue != autoRecognitionViewModel.isEnabled {
-                            autoRecognitionViewModel.toggleEnabled()
-                        }
-                    }
-            }
-            
-            SettingsRow(
-                icon: "moon.fill",
-                title: "深色模式",
-                color: .indigo,
-                action: {}
-            )
-            
-            SettingsRow(
-                icon: "globe",
-                title: "语言设置",
-                color: .green,
-                action: {}
-            )
-            
-            SettingsRow(
-                icon: "lock.fill",
-                title: "隐私设置",
-                color: .red,
-                action: {}
-            )
-        } header: {
-            Text("应用设置")
-        }
-        .alert("错误", isPresented: .constant(autoRecognitionViewModel.errorMessage != nil)) {
-            Button("确定") {
-                autoRecognitionViewModel.errorMessage = nil
-            }
-        } message: {
-            Text(autoRecognitionViewModel.errorMessage ?? "")
-        }
-    }
-    
-    // MARK: - 关于区域
-    private var aboutSection: some View {
-        Section {
-            SettingsRow(
-                icon: "questionmark.circle.fill",
-                title: "帮助与支持",
-                color: .blue,
-                action: {}
-            )
-            
-            SettingsRow(
-                icon: "star.fill",
-                title: "评价应用",
-                color: .yellow,
-                action: {}
-            )
-            
-            HStack {
-                Image(systemName: "info.circle.fill")
-                    .foregroundColor(.gray)
-                    .frame(width: 24)
-                
-                Text("版本")
-                
-                Spacer()
-                
-                Text("1.0.0")
-                    .foregroundColor(.secondary)
-            }
-        } header: {
-            Text("关于")
-        }
-    }
-    
-    // MARK: - 账号管理区域
-    private var accountManagementSection: some View {
-        Section {
-            // 删除账号按钮
-            Button(action: {
-                showingDeleteAccountConfirmation = true
-            }) {
-                HStack {
-                    Image(systemName: "trash.fill")
-                        .foregroundColor(.red)
-                        .frame(width: 24)
-                    
-                    Text("删除账号")
-                        .foregroundColor(.red)
-                    
-                    Spacer()
-                }
-            }
-            
-            // 退出登录按钮
-            Button(action: {
-                authViewModel.logout()
-            }) {
-                HStack {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                        .foregroundColor(.red)
-                        .frame(width: 24)
-                    
-                    Text("退出登录")
-                        .foregroundColor(.red)
-                    
-                    Spacer()
-                }
-            }
-        } header: {
-            Text("账号管理")
-        }
-    }
-}
-
-/**
- * 设置行组件
- */
-struct SettingsRow: View {
-    let icon: String
-    let title: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                    .frame(width: 24)
-                
-                Text(title)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
         }
     }
 }
@@ -513,24 +157,125 @@ class ExpenseStatsViewModel: ObservableObject {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            // 已登录状态
-            ContentView()
-                .previewDisplayName("已登录")
-            
-            // 深色模式
-            ContentView()
-                .preferredColorScheme(.dark)
-                .previewDisplayName("深色模式")
-        }
-    }
-}
-
-struct MainAppView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainAppView()
-            .environmentObject(BudgetViewModel())
-            .previewDisplayName("主应用界面")
+        ContentView()
     }
 }
 #endif
+
+// MARK: - 数据库测试函数
+
+/**
+ * 执行数据库连接测试
+ */
+func runDatabaseConnectionTest() async {
+    print("\n🚀 开始数据库连接测试")
+    print("================================")
+    
+    let supabaseManager = SupabaseManager.shared
+    
+    // 打印调试信息
+    print("📋 Supabase 配置信息:")
+    supabaseManager.printDebugInfo()
+    
+    // 1. 配置验证
+    print("\n🔍 步骤 1: 配置验证")
+    let configValid = supabaseManager.checkConfiguration()
+    print(configValid ? "✅ 配置验证: 成功" : "❌ 配置验证: 失败")
+    
+    // 2. 网络连通性测试
+    print("\n🌐 步骤 2: 网络连通性测试")
+    let networkReachable = await supabaseManager.testConfiguration()
+    print(networkReachable ? "✅ 网络连通性: 成功" : "❌ 网络连通性: 失败")
+    
+    // 3. 客户端初始化测试
+    print("\n🔧 步骤 3: 客户端初始化测试")
+    do {
+        let client = supabaseManager.client
+        print("✅ 客户端初始化: 成功")
+        print("   客户端已成功创建")
+    } catch {
+        print("❌ 客户端初始化: 失败")
+        print("   错误: \(error.localizedDescription)")
+    }
+    
+    // 4. 数据库连接测试
+    print("\n🗄️ 步骤 4: 数据库连接测试")
+    let dbConnected = await supabaseManager.testDatabaseConnection()
+    print(dbConnected ? "✅ 数据库连接: 成功" : "❌ 数据库连接: 失败")
+    
+    // 5. 认证服务测试
+    print("\n🔐 步骤 5: 认证服务测试")
+    let authConnected = await supabaseManager.testAuthConnection()
+    print(authConnected ? "✅ 认证服务: 成功" : "❌ 认证服务: 失败")
+    
+    // 6. 数据库表结构检查
+    print("\n📊 步骤 6: 数据库表结构检查")
+    let tables = await supabaseManager.checkDatabaseTables()
+    if !tables.isEmpty {
+        print("✅ 数据库表: 找到 \(tables.count) 个表")
+        print("   表: \(tables.joined(separator: ", "))")
+    } else {
+        print("⚠️ 数据库表: 未找到预期表")
+        print("   这可能是正常的，如果还未创建数据库表结构")
+    }
+    
+    // 测试总结
+    print("\n================================")
+    print("🏁 数据库连接测试完成")
+    
+    let successCount = [configValid, networkReachable, dbConnected, authConnected].filter { $0 }.count
+    let totalTests = 4
+    print("📈 测试结果: \(successCount)/\(totalTests) 项成功")
+    
+    if successCount == totalTests {
+        print("🎉 所有核心测试通过！数据库连接正常")
+        print("✨ Supabase 集成已准备就绪")
+    } else if successCount >= 2 {
+        print("⚠️ 部分测试成功，基本功能可用")
+        print("💡 建议检查失败的项目以优化连接")
+    } else {
+        print("❌ 多项测试失败，请检查配置")
+        print("🔧 建议检查网络连接和 Supabase 配置")
+    }
+    
+    print("================================\n")
+}
+
+/**
+ * 执行 Supabase 健康检查
+ */
+func runSupabaseHealthCheck() async {
+    print("\n🏥 开始 Supabase 完整健康检查")
+    print("================================")
+    
+    let supabaseManager = SupabaseManager.shared
+    let healthResult = await supabaseManager.performHealthCheck()
+    
+    // 打印详细报告
+    healthResult.printSummary()
+}
+
+/**
+ * 查看登录调试日志
+ */
+func viewLoginDebugLog() {
+    print("\n📋 查看登录调试日志")
+    print("================================")
+    
+    let logger = LoginDebugLogger.shared
+    let logContent = logger.getLogContent()
+    
+    if logContent.isEmpty {
+        print("📝 暂无登录调试日志")
+    } else {
+        print("📝 登录调试日志内容:")
+        print(logContent)
+        
+        // 保存日志到文件
+        if let filePath = logger.saveLogToFile() {
+            print("\n💾 日志已保存到文件: \(filePath)")
+        }
+    }
+    
+    print("================================\n")
+}

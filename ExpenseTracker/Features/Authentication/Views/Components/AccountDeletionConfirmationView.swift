@@ -1,114 +1,103 @@
 import SwiftUI
 
+/**
+ * 账户删除确认视图
+ */
 struct AccountDeletionConfirmationView: View {
-    @ObservedObject var authViewModel: AuthViewModel
+    @Environment(\.dismiss) private var dismiss
+    var authViewModel: AuthViewModel
     @Binding var isPresented: Bool
-    @State private var confirmationText = ""
-    @FocusState private var isTextFieldFocused: Bool
+    @State private var confirmText = ""
+    @State private var isDeleting = false
+    @State private var error: Error?
+    
+    init(authViewModel: AuthViewModel, isPresented: Binding<Bool>) {
+        self.authViewModel = authViewModel
+        self._isPresented = isPresented
+    }
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
+            VStack(spacing: 20) {
                 // 警告图标
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 60))
                     .foregroundColor(.red)
-                    .padding(.top, 20)
+                    .padding(.top, 30)
                 
                 // 警告标题
-                Text("删除账号")
+                Text("危险操作")
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
                 
-                // 警告内容
-                VStack(spacing: 16) {
-                    Text("你正在删除账号，账号删除后无法找回相关数据，请你认真思考并确认该操作。")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(nil)
-                    
-                    Text("请输入「我确认」来确认执行账号删除")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.horizontal, 20)
+                // 警告描述
+                Text("删除账户是不可逆操作，所有数据将被永久删除且无法恢复。")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
                 
                 // 确认输入框
-                VStack(alignment: .leading, spacing: 8) {
-                    TextField("请输入：我确认", text: $confirmationText)
+                VStack(alignment: .leading) {
+                    Text("请输入\"DELETE\"以确认删除")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("DELETE", text: $confirmText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .focused($isTextFieldFocused)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
-                    
-                    if !authViewModel.deleteAccountErrorMessage.isEmpty {
-                        Text(authViewModel.deleteAccountErrorMessage)
-                            .font(.caption)
-                            .foregroundColor(.red)
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
+                
+                // 错误信息
+                if let error = error {
+                    Text(error.localizedDescription)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.horizontal)
+                }
+                
+                // 删除按钮
+                Button(action: deleteAccount) {
+                    if isDeleting {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                    } else {
+                        Text("删除我的账户")
+                            .fontWeight(.bold)
                     }
                 }
-                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(confirmText == "DELETE" ? Color.red : Color.gray.opacity(0.5))
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding(.horizontal)
+                .disabled(confirmText != "DELETE" || isDeleting)
                 
                 Spacer()
-                
-                // 按钮区域
-                VStack(spacing: 12) {
-                    // 删除按钮
-                    Button(action: {
-                        let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
-                        impactFeedback.impactOccurred()
-                        authViewModel.deleteAccount(confirmationText: confirmationText)
-                    }) {
-                        HStack {
-                            if authViewModel.isDeletingAccount {
-                                ProgressView()
-                                    .scaleEffect(0.8)
-                                    .tint(.white)
-                            }
-                            Text(authViewModel.isDeletingAccount ? "删除中..." : "确认删除账号")
-                                .fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                    }
-                    .disabled(confirmationText.isEmpty || authViewModel.isDeletingAccount)
-                    .opacity(confirmationText.isEmpty ? 0.6 : 1.0)
-                    
-                    // 取消按钮
-                    Button("取消") {
-                        isPresented = false
-                        authViewModel.clearDeleteAccountForm()
-                        confirmationText = ""
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color(.systemGray6))
-                    .foregroundColor(.primary)
-                    .cornerRadius(12)
-                    .disabled(authViewModel.isDeletingAccount)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 20)
             }
-            .navigationTitle("")
-            .navigationBarHidden(true)
-            .background(Color(.systemBackground))
-        }
-        .onAppear {
-            isTextFieldFocused = true
-            authViewModel.clearDeleteAccountForm()
-        }
-        .onChange(of: authViewModel.isAuthenticated) { _, isAuthenticated in
-            if !isAuthenticated {
-                // 删除成功，关闭弹窗
+            .navigationBarTitle("删除账户", displayMode: .inline)
+            .navigationBarItems(leading: Button("取消") {
                 isPresented = false
+            })
+        }
+    }
+    
+    private func deleteAccount() {
+        isDeleting = true
+        error = nil
+        
+        authViewModel.deleteAccount { result in
+            isDeleting = false
+            
+            switch result {
+            case .success:
+                // 账户删除成功，会自动登出
+                isPresented = false
+            case .failure(let error):
+                self.error = error
             }
         }
     }

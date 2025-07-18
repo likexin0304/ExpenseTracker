@@ -96,7 +96,7 @@ struct RecognitionResultView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
             
-            Text("\(Int(editedResult.ocrConfidence * 100))%")
+            Text("\(Int(editedResult.categoryConfidence * 100))%")
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundColor(confidenceColor)
@@ -104,9 +104,9 @@ struct RecognitionResultView: View {
     }
     
     private var confidenceColor: Color {
-        if editedResult.ocrConfidence >= 0.8 {
+        if editedResult.categoryConfidence >= 0.8 {
             return .green
-        } else if editedResult.ocrConfidence >= 0.6 {
+        } else if editedResult.categoryConfidence >= 0.6 {
             return .orange
         } else {
             return .red
@@ -312,48 +312,48 @@ struct RecognitionResultView: View {
     }
     
     // MARK: - 辅助方法
-    private func categoryIcon(for category: ExpenseCategory) -> String {
+    private func categoryIcon(for category: String) -> String {
         switch category {
-        case .food:
+        case "餐饮", "food":
             return "fork.knife"
-        case .transport:
+        case "交通", "transport":
             return "car.fill"
-        case .shopping:
+        case "购物", "shopping":
             return "bag.fill"
-        case .entertainment:
+        case "娱乐", "entertainment":
             return "gamecontroller.fill"
-        case .healthcare:
+        case "医疗", "healthcare":
             return "cross.fill"
-        case .education:
+        case "教育", "education":
             return "book.fill"
-        case .bills:
+        case "账单", "bills":
             return "doc.text.fill"
-        case .travel:
+        case "旅行", "travel":
             return "airplane"
-        case .other:
+        default:
             return "questionmark.circle"
         }
     }
     
-    private func categoryDisplayName(for category: ExpenseCategory) -> String {
+    private func categoryDisplayName(for category: String) -> String {
         switch category {
-        case .food:
+        case "餐饮", "food":
             return "餐饮"
-        case .transport:
+        case "交通", "transport":
             return "交通"
-        case .shopping:
+        case "购物", "shopping":
             return "购物"
-        case .entertainment:
+        case "娱乐", "entertainment":
             return "娱乐"
-        case .healthcare:
+        case "医疗", "healthcare":
             return "医疗"
-        case .education:
+        case "教育", "education":
             return "教育"
-        case .bills:
+        case "账单", "bills":
             return "账单"
-        case .travel:
+        case "旅行", "travel":
             return "旅行"
-        case .other:
+        default:
             return "其他"
         }
     }
@@ -363,16 +363,19 @@ struct RecognitionResultView: View {
 #if DEBUG
 struct RecognitionResultView_Previews: PreviewProvider {
     static var previews: some View {
+        let testOCRData = OCRData(
+            text: "星巴克\n拿铁咖啡 ¥25.80\n配送费 ¥3.50\n微信支付",
+            confidence: 0.85,
+            textBlocks: []
+        )
+        
         let sampleResult = RecognitionResult(
+            ocrData: testOCRData,
             amounts: [25.80, 3.50],
-            description: "星巴克咖啡",
-            merchantName: "星巴克",
-            detectedDate: Date(),
-            paymentMethod: "微信支付",
-            rawText: "星巴克\n拿铁咖啡 ¥25.80\n配送费 ¥3.50\n微信支付",
-            suggestedCategory: .food,
+            merchants: ["星巴克"],
+            suggestedCategory: "餐饮",
             categoryConfidence: 0.85,
-            ocrConfidence: 0.85
+            isValid: true
         )
         
         RecognitionResultView(

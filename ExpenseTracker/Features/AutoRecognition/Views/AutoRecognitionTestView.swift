@@ -6,7 +6,9 @@ import SwiftUI
  */
 struct AutoRecognitionTestView: View {
     @StateObject private var testService = AutoRecognitionTestService.shared
+    @StateObject private var viewModel = AutoRecognitionViewModel()
     @State private var showTestReport = false
+    @State private var showLogs = false
     
     var body: some View {
         NavigationView {
@@ -37,8 +39,21 @@ struct AutoRecognitionTestView: View {
             }
             .navigationTitle("自动识别测试")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewModel.fetchBackTapLogs()
+                        showLogs = true
+                    }) {
+                        Image(systemName: "doc.text.magnifyingglass")
+                    }
+                }
+            }
             .sheet(isPresented: $showTestReport) {
                 TestReportView(report: testService.getTestReport())
+            }
+            .sheet(isPresented: $showLogs) {
+                BackTapLogsView(viewModel: viewModel)
             }
         }
     }
@@ -167,6 +182,21 @@ struct AutoRecognitionTestView: View {
                 .foregroundColor(.primary)
                 .cornerRadius(10)
                 .disabled(testService.testResults.isEmpty)
+            }
+            
+            Button(action: {
+                viewModel.fetchBackTapLogs()
+                showLogs = true
+            }) {
+                HStack {
+                    Image(systemName: "doc.text.magnifyingglass")
+                    Text("查看日志")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color(.systemGray5))
+                .foregroundColor(.primary)
+                .cornerRadius(10)
             }
         }
     }

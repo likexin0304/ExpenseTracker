@@ -1,6 +1,7 @@
 import UIKit
 import Vision
 import Combine
+import Foundation
 
 /**
  * OCR文字识别服务 - Phase 3 优化版本
@@ -39,12 +40,115 @@ class OCRService: ObservableObject {
     // MARK: - Public Methods
     
     /**
-     * 识别图像中的文字 - Phase 3 优化版本
+     * 识别图像中的文字并调用后端API解析 - 集成后端API版本
      * - Parameter image: 要识别的图像
-     * - Returns: OCR识别结果
+     * - Returns: OCR识别和解析结果
+     */
+    func recognizeTextWithAPI(from image: UIImage) async -> Result<OCRRecord, AutoRecognitionError> {
+        print("🔍 开始OCR文字识别和后端解析")
+        let startTime = Date()
+        
+        await MainActor.run {
+            isRecognizing = true
+            recognitionProgress = 0.0
+        }
+        
+        defer {
+            Task { @MainActor in
+                isRecognizing = false
+                recognitionProgress = 1.0
+            }
+        }
+        
+        // 第一步：本地OCR识别文字
+        let ocrResult = await withCheckedContinuation { continuation in
+            recognitionQueue.async {
+                self.performOCRRecognition(image: image) { result in
+                    continuation.resume(returning: result)
+                }
+            }
+        }
+        
+        // 更新进度
+        await MainActor.run {
+            recognitionProgress = 0.6
+        }
+        
+        // 第二步：如果OCR成功，调用后端API解析
+        switch ocrResult {
+        case .success(let ocrData):
+            print("✅ 本地OCR识别成功，开始后端解析")
+            
+            // 调用后端API解析文本
+            do {
+                let parseData = try await withCheckedThrowingContinuation { continuation in
+                    OCRAPIService.shared.parseOCRText(ocrData.text)
+                        .sink(
+                            receiveCompletion: { completion in
+                                if case .failure(let error) = completion {
+                                    continuation.resume(throwing: error)
+                                }
+                            },
+                            receiveValue: { parseData in
+                                continuation.resume(returning: parseData)
+                            }
+                        )
+                        .store(in: &self.cancellables)
+                }
+                
+                let record = parseData.record
+                
+                await MainActor.run {
+                    recognitionProgress = 1.0
+                }
+                
+                let processingTime = Date().timeIntervalSince(startTime)
+                self.performanceMonitor.recordRecognition(
+                    success: true,
+                    processingTime: processingTime
+                )
+                
+                print("✅ 后端解析成功")
+                return .success(record)
+                
+            } catch {
+                print("❌ 后端解析失败: \(error)")
+                let processingTime = Date().timeIntervalSince(startTime)
+                self.performanceMonitor.recordRecognition(
+                    success: false,
+                    processingTime: processingTime
+                )
+                
+                return .failure(.networkError("后端解析失败: \(error.localizedDescription)"))
+            }
+            
+        case .failure(let error):
+            print("❌ 本地OCR识别失败: \(error)")
+            let processingTime = Date().timeIntervalSince(startTime)
+            self.performanceMonitor.recordRecognition(
+                success: false,
+                processingTime: processingTime
+            )
+            return .failure(error)
+        }
+    }
+    
+    /**
+     * 仅执行本地OCR识别（原始方法，保持向后兼容）
+     * - Parameter image: 要识别的图像
+     * - Returns: 本地OCR识别结果
      */
     func recognizeText(from image: UIImage) async -> Result<OCRData, AutoRecognitionError> {
-        print("🔍 开始OCR文字识别")
+        return await recognizeTextLocally(from: image)
+    }
+    
+    /**
+     * 仅执行本地OCR识别（不调用后端API）
+     * - Parameter image: 要识别的图像
+     * - Returns: 本地OCR识别结果
+     */
+    func recognizeTextLocally(from image: UIImage) async -> Result<OCRData, AutoRecognitionError> {
+        print("🔍 开始本地OCR文字识别")
         let startTime = Date()
         
         await MainActor.run {
@@ -326,11 +430,9 @@ class OCRService: ObservableObject {
             
             let textBlock = OCRTextBlock(
                 text: text,
-                confidence: confidence,
+                confidence: Double(confidence),
                 boundingBox: boundingBox,
-                textType: textType,
-                isPotentialAmount: textType == .amount || textType == .currency,
-                isPotentialMerchant: textType == .merchant || textType == .header
+                textType: textType
             )
             
             textBlocks.append(textBlock)
@@ -360,10 +462,9 @@ class OCRService: ObservableObject {
         let cleanedTextBlocks = postProcessTextBlocks(textBlocks)
         
         let ocrData = OCRData(
-            textBlocks: cleanedTextBlocks,
-            confidence: overallConfidence,
-            processingTime: Date().timeIntervalSince(Date()),
-            imageSize: CGSize.zero // 这里可以传入实际图像尺寸
+            text: cleanedTextBlocks.map { $0.text }.joined(separator: " "),
+            confidence: Double(overallConfidence),
+            textBlocks: cleanedTextBlocks.map { TextBlock(text: $0.text, confidence: $0.confidence, boundingBox: $0.boundingBox) }
         )
         
         print("✅ OCR识别完成")
@@ -446,9 +547,7 @@ class OCRService: ObservableObject {
                 text: cleanedText,
                 confidence: block.confidence,
                 boundingBox: block.boundingBox,
-                textType: block.textType,
-                isPotentialAmount: block.isPotentialAmount,
-                isPotentialMerchant: block.isPotentialMerchant
+                textType: block.textType
             )
         }
     }
@@ -503,8 +602,6 @@ struct OCRConfiguration {
         "微信", "支付宝", "银行卡", "现金", "刷卡"
     ]
 }
-
-
 
 /**
  * OCR性能监控 - Phase 3 新增
