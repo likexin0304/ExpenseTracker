@@ -130,6 +130,13 @@ class NetworkManager {
     
     // MARK: - 私有方法
     
+    /// 创建配置好的JSONDecoder
+    private func createJSONDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }
+    
     /// 执行网络请求（Encodable请求体）
     private func performRequest<T: Decodable, E: Encodable>(
         url: URL,
@@ -221,7 +228,7 @@ class NetworkManager {
                 
                 return data
             }
-            .decode(type: responseType, decoder: JSONDecoder())
+            .decode(type: responseType, decoder: self.createJSONDecoder())
             .mapError { error -> NetworkError in
                 if let networkError = error as? NetworkError {
                     return networkError

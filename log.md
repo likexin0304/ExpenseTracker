@@ -1,5 +1,88 @@
 # 修复日志
 
+## 2024-07-17 修复 - 登录解码错误
+
+### 修复登录时的日期解码错误
+
+**问题描述：**
+登录时出现解码错误，错误信息显示：
+```
+decodingError(Swift.DecodingError.typeMismatch(Swift.Double, Swift.DecodingError.Context(codingPath: [CodingKeys(stringValue: "data", intValue: nil), CodingKeys(stringValue: "user", intValue: nil), CodingKeys(stringValue: "createdAt", intValue: nil)], debugDescription: "Expected to decode Double but found a string instead.", underlyingError: nil)))
+```
+
+**问题分析：**
+1. 后端返回的日期格式为ISO 8601字符串：`"2025-06-18T07:48:55.314517+00:00"`
+2. Swift的默认JSONDecoder期望Date类型对应Double（时间戳）格式
+3. 导致日期字段解码失败
+
+**修复方案：**
+1. 修改`User.swift`中的`username`字段为可选类型，因为后端不返回此字段
+2. 在`NetworkManager.swift`中添加ISO 8601日期解码策略
+
+**修改内容：**
+
+1. **User.swift**：
+```swift
+// 将username字段改为可选
+let username: String?  // 改为可选字段，因为后端可能不返回此字段
+
+// 更新初始化方法
+init(id: String, email: String, username: String? = nil, createdAt: Date, updatedAt: Date = Date()) {
+    // ...
+}
+```
+
+2. **NetworkManager.swift**：
+```swift
+// 添加创建JSONDecoder的方法
+private func createJSONDecoder() -> JSONDecoder {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    return decoder
+}
+
+// 修改解码调用
+.decode(type: responseType, decoder: self.createJSONDecoder())
+```
+
+**结果：**
+修复后，登录流程应该能够正确解码后端返回的ISO 8601格式日期字符串。
+
+### 全面检查和修复日期解码问题
+
+**检查范围：**
+对整个项目进行了全面检查，确保所有使用JSONDecoder的地方都正确配置了日期解码策略。
+
+**发现的问题：**
+1. `ResponseHandler.swift`中使用了默认的JSONDecoder，没有配置日期解码策略
+
+**修复内容：**
+
+3. **ResponseHandler.swift**：
+```swift
+// 添加创建JSONDecoder的私有方法
+private static func createJSONDecoder() -> JSONDecoder {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    return decoder
+}
+
+// 修改所有JSONDecoder的使用
+let decoder = createJSONDecoder()
+responseData = try? createJSONDecoder().decode(T.self, from: dataJsonData)
+```
+
+**检查结果：**
+- ✅ `User.swift` - 已修复，username字段改为可选
+- ✅ `NetworkManager.swift` - 已修复，添加了ISO 8601日期解码策略
+- ✅ `ResponseHandler.swift` - 已修复，添加了ISO 8601日期解码策略
+- ✅ `Expense.swift` - 已正确实现自定义日期解码
+- ✅ `Budget.swift` - 使用String类型存储日期，无需修改
+- ✅ `OCRModels.swift` - 使用String类型存储日期，无需修改
+
+**最终状态：**
+所有网络请求和数据解码现在都使用统一的ISO 8601日期解码策略，确保与后端API的日期格式兼容。
+
 ## 2024-07-17 修复
 
 ### 修复 ExpenseService.swift 中的编译错误

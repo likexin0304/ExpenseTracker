@@ -66,14 +66,14 @@ class AuthManager: ObservableObject, @unchecked Sendable {
                         self?.isLoading = false
                         let user = response.user
                         // 创建默认用户
-                        let appUser = ExpenseTracker.User(
-                            id: user.id.uuidString,
-                            email: email,
-                            username: username,
-                            createdAt: Date(),
-                            updatedAt: Date()
-                        )
-                        self?.handleAuthSuccess(user: appUser)
+                            let appUser = ExpenseTracker.User(
+                                id: user.id.uuidString,
+                                email: email,
+                                username: username,
+                                createdAt: Date(),
+                                updatedAt: Date()
+                            )
+                            self?.handleAuthSuccess(user: appUser)
                     }
                     
                     promise(.success(()))
@@ -109,15 +109,15 @@ class AuthManager: ObservableObject, @unchecked Sendable {
                     DispatchQueue.main.async {
                         self?.isLoading = false
                         let user = response.user
-                        // 创建用户对象
-                        let appUser = ExpenseTracker.User(
-                            id: user.id.uuidString,
-                            email: email,
-                            username: user.userMetadata["username"] as? String ?? "User",
-                            createdAt: Date(),
-                            updatedAt: Date()
-                        )
-                        self?.handleAuthSuccess(user: appUser)
+                            // 创建用户对象
+                            let appUser = ExpenseTracker.User(
+                                id: user.id.uuidString,
+                                email: email,
+                                username: user.userMetadata["username"] as? String ?? "User",
+                                createdAt: Date(),
+                                updatedAt: Date()
+                            )
+                            self?.handleAuthSuccess(user: appUser)
                     }
                     
                     promise(.success(()))

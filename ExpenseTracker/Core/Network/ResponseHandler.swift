@@ -7,6 +7,13 @@ import Combine
  */
 class ResponseHandler {
     
+    /// 创建配置好的JSONDecoder
+    private static func createJSONDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }
+    
     /**
      * 智能解析API响应
      * 自动适配有message和无message的响应格式
@@ -16,7 +23,7 @@ class ResponseHandler {
         responseType: T.Type
     ) -> Result<APIResponse<T>, NetworkError> {
         
-        let decoder = JSONDecoder()
+        let decoder = createJSONDecoder()
         
         // 首先尝试解析为标准APIResponse格式
         if let standardResponse = try? decoder.decode(APIResponse<T>.self, from: data) {
@@ -39,7 +46,7 @@ class ResponseHandler {
             var responseData: T? = nil
             if let dataJson = jsonDict["data"] {
                 let dataJsonData = try JSONSerialization.data(withJSONObject: dataJson, options: [])
-                responseData = try? decoder.decode(T.self, from: dataJsonData)
+                responseData = try? createJSONDecoder().decode(T.self, from: dataJsonData)
             }
             
             if let responseData = responseData {
