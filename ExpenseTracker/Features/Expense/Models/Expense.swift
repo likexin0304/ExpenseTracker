@@ -25,30 +25,61 @@ struct Expense: Codable, Identifiable, Hashable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        // 必需字段
-        id = try container.decode(String.self, forKey: .id)
-        userId = try container.decode(String.self, forKey: .userId)
-        amount = try container.decode(Double.self, forKey: .amount)
-        category = try container.decode(String.self, forKey: .category)
-        description = try container.decode(String.self, forKey: .description)
-        
-        // 日期字段处理 - 支持ISO8601格式
-        let dateString = try container.decode(String.self, forKey: .date)
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        date = formatter.date(from: dateString) ?? Date()
-        
-        // 可选字段
-        location = try container.decodeIfPresent(String.self, forKey: .location)
-        paymentMethod = try container.decodeIfPresent(String.self, forKey: .paymentMethod) ?? "cash"
-        tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
-        
-        // 时间戳字段
-        let createdAtString = try container.decode(String.self, forKey: .createdAt)
-        createdAt = formatter.date(from: createdAtString) ?? Date()
-        
-        let updatedAtString = try container.decode(String.self, forKey: .updatedAt)
-        updatedAt = formatter.date(from: updatedAtString) ?? Date()
+        do {
+            // ID字段 - 支持Int和String两种格式
+            if let idInt = try? container.decode(Int.self, forKey: .id) {
+                id = String(idInt)
+                print("✅ ID解码成功 (Int): \(id)")
+            } else {
+                id = try container.decode(String.self, forKey: .id)
+                print("✅ ID解码成功 (String): \(id)")
+            }
+            
+            // UserId字段 - 支持Int和String两种格式
+            if let userIdInt = try? container.decode(Int.self, forKey: .userId) {
+                userId = String(userIdInt)
+                print("✅ UserId解码成功 (Int): \(userId)")
+            } else {
+                userId = try container.decode(String.self, forKey: .userId)
+                print("✅ UserId解码成功 (String): \(userId)")
+            }
+            
+            // 其他必需字段
+            amount = try container.decode(Double.self, forKey: .amount)
+            print("✅ Amount解码成功: \(amount)")
+            
+            category = try container.decode(String.self, forKey: .category)
+            print("✅ Category解码成功: \(category)")
+            
+            description = try container.decode(String.self, forKey: .description)
+            print("✅ Description解码成功: \(description)")
+            
+            // 日期字段处理 - 支持ISO8601格式
+            let dateString = try container.decode(String.self, forKey: .date)
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            date = formatter.date(from: dateString) ?? Date()
+            print("✅ Date解码成功: \(dateString)")
+            
+            // 可选字段
+            location = try container.decodeIfPresent(String.self, forKey: .location)
+            paymentMethod = try container.decodeIfPresent(String.self, forKey: .paymentMethod) ?? "cash"
+            tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
+            print("✅ 可选字段解码成功")
+            
+            // 时间戳字段
+            let createdAtString = try container.decode(String.self, forKey: .createdAt)
+            createdAt = formatter.date(from: createdAtString) ?? Date()
+            print("✅ CreatedAt解码成功: \(createdAtString)")
+            
+            let updatedAtString = try container.decode(String.self, forKey: .updatedAt)
+            updatedAt = formatter.date(from: updatedAtString) ?? Date()
+            print("✅ UpdatedAt解码成功: \(updatedAtString)")
+        } catch {
+            print("❌ Expense解码失败: \(error)")
+            print("❌ 解码错误详情: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     // MARK: - 计算属性

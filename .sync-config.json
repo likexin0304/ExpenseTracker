@@ -1,0 +1,24 @@
+{
+  "sourcePath": "/Users/kexin.li/Desktop/ExpenseTracker",
+  "targetProjects": [
+    {
+      "name": "后端项目",
+      "path": "/Users/kexin.li/Desktop/Backend-Project",
+      "enabled": true
+    },
+    {
+      "name": "其他项目",
+      "path": "/path/to/another-project",
+      "enabled": false
+    }
+  ],
+  "files": [
+    "后端API需求清单.md",
+    "API-Backend.md"
+  ],
+  "autoSync": {
+    "enabled": false,
+    "interval": 60
+  }
+}
+

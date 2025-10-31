@@ -42,7 +42,8 @@ class BudgetViewModel: ObservableObject {
         print("🎯 BudgetViewModel初始化")
         setupBindings()
         setupNotificationObservers()
-        loadBudgetData()
+        // ❌ 移除自动加载 - 改为在onAppear时手动调用
+        // loadBudgetData()
     }
     
     deinit {
@@ -409,7 +410,21 @@ class BudgetViewModel: ObservableObject {
      * 处理错误
      */
     private func handleError(_ error: Error) {
+        // ✅ 401/403错误不显示给用户，这是认证问题，应该由AuthService处理
+        if let networkError = error as? NetworkError {
+            switch networkError {
+            case .unauthorized, .forbidden:
+                print("⚠️ 预算数据加载失败：用户未授权，这是正常的（可能Token已过期）")
+                // 不显示错误，让AuthService处理认证问题
+                return
+            default:
+                // 其他错误（网络错误、服务器错误等）正常显示
+                break
+            }
+        }
+        
         let message = error.localizedDescription
+        print("❌ 显示错误消息给用户: \(message)")
         showErrorMessage(message)
     }
     

@@ -47,6 +47,14 @@ struct AuthData: Codable {
 // 用户响应（获取用户信息接口的响应）
 typealias UserResponse = APIResponse<User>
 
+// GET /api/auth/me 的响应数据结构
+struct AuthMeData: Codable {
+    let user: User
+}
+
+// GET /api/auth/me 的完整响应
+typealias AuthMeResponse = APIResponse<AuthMeData>
+
 // MARK: - 删除账号请求
 struct DeleteAccountRequest: Codable {
     let confirmationText: String

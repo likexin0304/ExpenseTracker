@@ -208,7 +208,7 @@ class OCRService: ObservableObject {
     /**
      * 执行OCR识别 - Phase 3 优化版本
      */
-    private func performOCRRecognition(
+    public func performOCRRecognition(
         image: UIImage,
         completion: @escaping (Result<OCRData, AutoRecognitionError>) -> Void
     ) {

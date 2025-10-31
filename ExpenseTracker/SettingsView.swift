@@ -21,9 +21,6 @@ struct SettingsView: View {
                 // 智能识别设置区域
                 autoOCRSettingsSection
                 
-                // 应用设置区域
-                appSettingsSection
-                
                 // 数据库测试区域
                 databaseTestSection
                 
@@ -103,51 +100,45 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "doc.text.viewfinder")
                         .foregroundColor(.blue)
-                    Text("自动识别设置")
-                }
-            }
-            
-            Toggle("启用背敲检测", isOn: $autoOCRViewModel.automationSettings.enableBackTap)
-            
-            if autoOCRViewModel.automationSettings.debugMode {
-                HStack {
-                    Image(systemName: "ladybug")
-                        .foregroundColor(.orange)
-                    Text("调试模式已启用")
-                        .foregroundColor(.orange)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("自动识别设置")
+                            .font(.body)
+                        
+                        // 显示当前配置状态
+                        HStack(spacing: 8) {
+                            if autoOCRViewModel.automationSettings.enableBackTap {
+                                HStack(spacing: 2) {
+                                    Image(systemName: "hand.tap.fill")
+                                        .font(.caption2)
+                                    Text("背敲")
+                                }
+                                .foregroundColor(.green)
+                                .font(.caption)
+                            }
+                            
+                            Text(autoOCRViewModel.automationSettings.level.displayName)
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                            
+                            if autoOCRViewModel.automationSettings.debugMode {
+                                HStack(spacing: 2) {
+                                    Image(systemName: "ladybug.fill")
+                                        .font(.caption2)
+                                    Text("调试")
+                                }
+                                .foregroundColor(.orange)
+                                .font(.caption)
+                            }
+                        }
+                    }
+                    
+                    Spacer()
                 }
             }
         }
     }
     
-    // MARK: - 应用设置区域
-    private var appSettingsSection: some View {
-        Section(header: Text("应用设置")) {
-            NavigationLink(destination: Text("主题设置")) {
-                HStack {
-                    Image(systemName: "paintbrush")
-                        .foregroundColor(.pink)
-                    Text("主题设置")
-                }
-            }
-            
-            NavigationLink(destination: Text("通知设置")) {
-                HStack {
-                    Image(systemName: "bell")
-                        .foregroundColor(.orange)
-                    Text("通知设置")
-                }
-            }
-            
-            NavigationLink(destination: Text("数据导出")) {
-                HStack {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundColor(.green)
-                    Text("数据导出")
-                }
-            }
-        }
-    }
     
     // MARK: - 数据库测试区域
     private var databaseTestSection: some View {

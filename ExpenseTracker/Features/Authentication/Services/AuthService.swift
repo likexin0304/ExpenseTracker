@@ -183,7 +183,7 @@ class AuthService: ObservableObject {
         return networkManager.request(
             endpoint: .authMe,
             method: .GET,
-            responseType: APIResponse<User>.self
+            responseType: AuthMeResponse.self
         )
         .tryMap { response in
             print("✅ 获取用户信息响应: success=\(response.success)")
@@ -197,10 +197,10 @@ class AuthService: ObservableObject {
             print("✅ 获取用户信息成功")
             // ✅ 确保UI状态更新在主线程执行
             DispatchQueue.main.async {
-                if let user = response.data {
-                    self.currentUser = user
+                if let authMeData = response.data {
+                    self.currentUser = authMeData.user  // ← 从嵌套的user对象中提取
                     self.isAuthenticated = true
-                    print("✅ 用户信息状态已在主线程更新")
+                    print("✅ 用户信息状态已在主线程更新: \(authMeData.user.email)")
                 }
             }
             return ()
@@ -245,7 +245,7 @@ class AuthService: ObservableObject {
         debugLogger.log("💾 认证数据保存完成")
     }
     
-    private func getStoredToken() -> String? {
+    func getStoredToken() -> String? {
         let token = UserDefaults.standard.string(forKey: tokenKey)
         if token != nil {
             print("🔑 找到存储的Token: \(String(describing: token?.prefix(10)))...")
@@ -267,8 +267,19 @@ class AuthService: ObservableObject {
                 .sink(receiveCompletion: { completion in
                     if case .failure(let error) = completion {
                         print("❌ 加载用户信息失败: \(error)")
-                        // 如果获取用户信息失败，清除认证状态
-                        self.clearAllData()
+                        
+                        // ✅ 智能错误处理：只在401/403时清除token
+                        if case .unauthorized = error {
+                            print("⚠️ Token无效，清除认证状态")
+                            self.clearAllData()
+                        } else if case .forbidden = error {
+                            print("⚠️ Token已过期，清除认证状态")
+                            self.clearAllData()
+                        } else {
+                            // 其他错误（如429限流、网络错误）保持登录状态
+                            print("⚠️ 暂时无法获取用户信息，但保持登录状态")
+                            print("   错误类型: \(error)")
+                        }
                     }
                 }, receiveValue: { _ in
                     print("✅ 用户信息已加载")

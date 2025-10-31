@@ -137,6 +137,18 @@ class NetworkManager {
         return decoder
     }
     
+    /// 自动添加Authorization头（如果用户已登录）
+    private func addAuthorizationHeader(to request: inout URLRequest) {
+        // 直接从UserDefaults读取token，避免循环依赖
+        let tokenKey = "supabase_access_token"
+        if let token = UserDefaults.standard.string(forKey: tokenKey) {
+            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            print("🔑 添加Authorization头部: Bearer \(token.prefix(20))...")
+        } else {
+            print("⚠️ 未获取到token，可能用户未登录")
+        }
+    }
+    
     /// 执行网络请求（Encodable请求体）
     private func performRequest<T: Decodable, E: Encodable>(
         url: URL,
@@ -148,6 +160,9 @@ class NetworkManager {
         request.httpMethod = method.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        // 自动添加Authorization头
+        addAuthorizationHeader(to: &request)
         
         // 添加请求体
         if let body = body {
@@ -174,6 +189,9 @@ class NetworkManager {
         request.httpMethod = method.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        // 自动添加Authorization头
+        addAuthorizationHeader(to: &request)
         
         // 添加请求体
         if let jsonBody = jsonBody {

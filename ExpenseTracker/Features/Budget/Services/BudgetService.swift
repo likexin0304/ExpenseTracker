@@ -115,7 +115,6 @@ class BudgetService: ObservableObject {
         return networkManager.request(
             endpoint: .budgetCurrent,
             method: .GET,
-            
             responseType: APIResponse<BudgetStatusResponse>.self
         )
         .tryMap { [weak self] response in
@@ -124,6 +123,11 @@ class BudgetService: ObservableObject {
             guard response.success else {
                 let errorMessage = response.message ?? "获取预算状态失败"
                 print("❌ 获取预算状态失败: \(errorMessage)")
+                // ✅ 如果后端返回401，message通常是"无效的认证令牌"或"未提供认证令牌"
+                // 这种情况下，应该抛出unauthorized错误，而不是serverError
+                if errorMessage.contains("认证令牌") || errorMessage.contains("未提供") || errorMessage.contains("未授权") {
+                    throw NetworkError.unauthorized
+                }
                 throw NetworkError.serverError(errorMessage)
             }
             
@@ -134,9 +138,11 @@ class BudgetService: ObservableObject {
                 throw NetworkError.decodingError(NSError(domain: "BudgetService", code: -1, userInfo: [NSLocalizedDescriptionKey: "响应数据为空"]))
             }
             
-            // 更新当前预算和统计信息
-            self?.currentBudget = budgetData.budget
-            self?.currentStatistics = budgetData.statistics
+            // ✅ 更新当前预算和统计信息（确保在主线程）
+            DispatchQueue.main.async {
+                self?.currentBudget = budgetData.budget
+                self?.currentStatistics = budgetData.statistics
+            }
             
             if let budget = budgetData.budget {
                 print("💰 当前预算: \(budget.formattedAmount)")
@@ -151,10 +157,28 @@ class BudgetService: ObservableObject {
         }
         .mapError { error in
             if let networkError = error as? NetworkError {
+                // ✅ 如果已经是NetworkError，直接返回（包括unauthorized）
                 return networkError
+            } else if let decodingError = error as? DecodingError {
+                // ✅ DecodingError转换为decodingError
+                print("❌ 预算数据解析失败: \(decodingError)")
+                // 打印详细的解码错误信息
+                switch decodingError {
+                case .keyNotFound(let key, let context):
+                    print("❌ 缺少字段: \(key.stringValue), 路径: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))")
+                case .typeMismatch(let type, let context):
+                    print("❌ 类型不匹配: 期望\(type), 路径: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))")
+                case .valueNotFound(let type, let context):
+                    print("❌ 值不存在: 期望\(type), 路径: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))")
+                case .dataCorrupted(let context):
+                    print("❌ 数据损坏: \(context.debugDescription)")
+                @unknown default:
+                    print("❌ 未知解码错误")
+                }
+                return NetworkError.decodingError(decodingError)
             } else {
-                print("❌ 预算数据解析失败: \(error)")
-                return NetworkError.decodingError(error)
+                print("❌ 预算数据请求未知错误: \(error)")
+                return NetworkError.unknown(error)
             }
         }
         .eraseToAnyPublisher()

@@ -1,7 +1,7 @@
 import Foundation
 
 /// 自动化级别
-enum AutomationLevel: String, CaseIterable {
+enum AutomationLevel: String, CaseIterable, Codable {
     case manual = "manual"
     case smart = "smart"
     case automatic = "automatic"
@@ -41,7 +41,7 @@ enum AutomationLevel: String, CaseIterable {
 }
 
 /// 自动化设置
-struct AutomationSettings {
+struct AutomationSettings: Codable {
     var level: AutomationLevel = .manual
     var confidenceThreshold: Double = 0.8
     var enableNotifications: Bool = true

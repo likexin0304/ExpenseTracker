@@ -61,11 +61,13 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            // 只在用户已登录时才加载预算数据
-            if authService.isAuthenticated {
+            // ✅ 只在用户已登录且已获取到用户信息时才加载预算数据
+            // 这样可以避免Token无效时仍然尝试加载数据
+            if authService.isAuthenticated && authService.currentUser != nil {
+                print("✅ 用户已认证且用户信息已加载，开始加载预算数据")
                 budgetViewModel.loadBudgetData()
             } else {
-                print("⚠️ 用户未登录，跳过预算数据加载")
+                print("⚠️ 用户未完全认证（isAuthenticated: \(authService.isAuthenticated), currentUser: \(authService.currentUser?.email ?? "nil")），跳过预算数据加载")
             }
         }
         .alert("错误", isPresented: $budgetViewModel.showError) {

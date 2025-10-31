@@ -3,13 +3,22 @@ import SwiftUI
 /// 自动化设置界面
 struct AutomationSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = AutoOCRViewModel()
     @State private var settings: AutomationSettings
     @State private var showingPresetAlert = false
     @State private var selectedPreset: AutomationSettings?
     
     init() {
-        _settings = State(initialValue: AutomationSettings())
+        // ✅ 从UserDefaults加载保存的设置，如果没有则使用默认值
+        if let savedData = UserDefaults.standard.data(forKey: "automationSettings"),
+           let decoded = try? JSONDecoder().decode(AutomationSettings.self, from: savedData) {
+            _settings = State(initialValue: decoded)
+            print("✅ 从UserDefaults加载自动化设置")
+        } else {
+            // 使用AutoOCRViewModel的默认设置
+            let defaultSettings = AutoOCRViewModel().automationSettings
+            _settings = State(initialValue: defaultSettings)
+            print("⚠️ 使用默认自动化设置")
+        }
     }
     
     var body: some View {
@@ -238,9 +247,95 @@ struct AutomationSettingsView: View {
     // MARK: - 保存设置
     
     private func saveSettings() {
-        // 实际应用中，这里应该调用服务来保存设置
-        viewModel.automationSettings = settings
+        print("💾 保存自动化设置")
+        
+        // ✅ 1. 从UserDefaults读取旧设置，用于比较
+        var oldBackTapEnabled = false
+        if let savedData = UserDefaults.standard.data(forKey: "automationSettings"),
+           let oldSettings = try? JSONDecoder().decode(AutomationSettings.self, from: savedData) {
+            oldBackTapEnabled = oldSettings.enableBackTap
+            print("📖 读取旧设置: enableBackTap = \(oldBackTapEnabled)")
+        } else {
+            print("⚠️ 未找到旧设置，使用默认值")
+        }
+        
+        let newBackTapEnabled = settings.enableBackTap
+        
+        // ✅ 2. 保存设置到UserDefaults（持久化）
+        if let encoded = try? JSONEncoder().encode(settings) {
+            UserDefaults.standard.set(encoded, forKey: "automationSettings")
+            print("✅ 设置已保存到UserDefaults")
+        } else {
+            print("❌ 设置编码失败")
+        }
+        
+        // ✅ 3. 同步到AutoOCRViewModel（如果其他地方在使用）
+        let ocrViewModel = AutoOCRViewModel()
+        ocrViewModel.updateAutomationSettings(settings)
+        print("✅ 设置已同步到AutoOCRViewModel")
+        
+        // ✅ 4. 如果背敲检测开关发生变化，启用/禁用BackTapService
+        if oldBackTapEnabled != newBackTapEnabled {
+            print("🔄 背敲检测状态变化: \(oldBackTapEnabled) -> \(newBackTapEnabled)")
+            handleBackTapToggle(enabled: newBackTapEnabled)
+        } else {
+            print("ℹ️ 背敲检测状态未变化: \(newBackTapEnabled)")
+            // 即使状态未变化，也确保服务状态正确
+            if newBackTapEnabled {
+                // 如果应该启用但未启用，重新启用
+                if !BackTapService.shared.isEnabled {
+                    handleBackTapToggle(enabled: true)
+                }
+            } else {
+                // 如果应该禁用但已启用，禁用
+                if BackTapService.shared.isEnabled {
+                    handleBackTapToggle(enabled: false)
+                }
+            }
+        }
+        
+        print("✅ 自动化设置已保存并生效")
         dismiss()
+    }
+    
+    /// 处理背面敲击开关切换
+    private func handleBackTapToggle(enabled: Bool) {
+        print("🔄 背面敲击检测开关: \(enabled ? "启用" : "禁用")")
+        
+        if enabled {
+            // ✅ 启用背面敲击检测
+            BackTapService.shared.enableBackTapDetection {
+                print("🎯 背面敲击检测触发")
+                Task { @MainActor in
+                    print("🚀 开始自动识别流程")
+                    AutoRecognitionViewModel.shared.isEnabled = true
+                    AutoRecognitionViewModel.shared.manualTrigger()
+                }
+            }
+            
+            // ✅ 同时启用自动识别功能
+            AutoRecognitionViewModel.shared.isEnabled = true
+            
+            // ✅ 验证服务状态
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if BackTapService.shared.isEnabled {
+                    print("✅ 背面敲击检测服务状态验证: 已启用")
+                    print("✅ 自动识别功能状态: \(AutoRecognitionViewModel.shared.isEnabled ? "已启用" : "未启用")")
+                } else {
+                    print("❌ 警告: 背面敲击检测服务未正确启用")
+                }
+            }
+            
+            print("✅ 背面敲击检测和自动识别功能已启用")
+        } else {
+            // ✅ 禁用背面敲击检测
+            BackTapService.shared.disableBackTapDetection()
+            
+            // ✅ 同时禁用自动识别功能（可选，也可以保持启用）
+            // AutoRecognitionViewModel.shared.isEnabled = false
+            
+            print("❌ 背面敲击检测已禁用（自动识别功能保持当前状态）")
+        }
     }
 }
 

@@ -80,8 +80,8 @@ class SupabaseManager: ObservableObject {
         do {
             print("🔄 开始测试数据库连接...")
             
-            // 执行一个简单的查询来测试连接
-            let response = try await client.database
+            // ✅ 使用新的API方式执行查询（修复deprecated警告）
+            let response = try await client
                 .from("users")
                 .select("id")
                 .limit(1)

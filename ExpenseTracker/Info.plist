@@ -36,6 +36,13 @@
 		<string>background-fetch</string>
 	</array>
 	
+	<!-- 后台任务标识符 -->
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.expensetracker.background-ocr</string>
+		<string>com.expensetracker.background-refresh</string>
+	</array>
+	
 	<!-- 应用支持的设备方向 -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

@@ -32,6 +32,42 @@ struct ExpenseTrackerApp: App {
     init() {
         // 注册后台任务
         registerBackgroundTasks()
+        
+        // ✅ 加载保存的自动化设置并应用
+        loadAndApplyAutomationSettings()
+    }
+    
+    /// 加载并应用保存的自动化设置
+    private func loadAndApplyAutomationSettings() {
+        print("🔄 App启动：加载自动化设置")
+        
+        // 从UserDefaults加载设置
+        if let savedData = UserDefaults.standard.data(forKey: "automationSettings"),
+           let settings = try? JSONDecoder().decode(AutomationSettings.self, from: savedData) {
+            print("✅ 从UserDefaults加载自动化设置成功")
+            
+            // 如果背敲检测已启用，应用设置
+            if settings.enableBackTap {
+                print("🔧 应用背敲检测设置：启用")
+                BackTapService.shared.enableBackTapDetection {
+                    print("🎯 背面敲击检测触发（App启动时加载）")
+                    Task { @MainActor in
+                        print("🚀 开始自动识别流程")
+                        AutoRecognitionViewModel.shared.isEnabled = true
+                        AutoRecognitionViewModel.shared.manualTrigger()
+                    }
+                }
+                
+                // 启用自动识别功能
+                AutoRecognitionViewModel.shared.isEnabled = true
+                
+                print("✅ 背敲检测和自动识别功能已在App启动时启用")
+            } else {
+                print("ℹ️ 背敲检测未启用，跳过")
+            }
+        } else {
+            print("⚠️ 未找到保存的自动化设置，使用默认值")
+        }
     }
 
     var body: some Scene {
@@ -96,12 +132,19 @@ struct ExpenseTrackerApp: App {
         
         Task {
             await MainActor.run {
-                // 通知自动OCR服务处理剪贴板中的截图
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("ProcessClipboardScreenshot"),
-                    object: nil,
-                    userInfo: ["sourceURL": url]
-                )
+                print("🚀 触发自动识别流程...")
+                
+                // 检查AutoRecognitionViewModel是否启用
+                let viewModel = AutoRecognitionViewModel.shared
+                if viewModel.isEnabled {
+                    print("✅ 自动识别已启用，开始执行...")
+                    viewModel.manualTrigger()
+                } else {
+                    print("⚠️ 自动识别未启用，启用中...")
+                    // 临时启用以处理这次请求
+                    viewModel.isEnabled = true
+                    viewModel.manualTrigger()
+                }
             }
         }
     }

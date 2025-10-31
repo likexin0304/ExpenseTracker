@@ -58,11 +58,15 @@
 		};
 		BE38D5BF2DF6FE2700FDD712 /* ExpenseTrackerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = ExpenseTrackerTests;
 			sourceTree = "<group>";
 		};
 		BE38D5C92DF6FE2700FDD712 /* ExpenseTrackerUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = ExpenseTrackerUITests;
 			sourceTree = "<group>";
 		};
@@ -165,8 +169,6 @@
 				BE38D5BF2DF6FE2700FDD712 /* ExpenseTrackerTests */,
 			);
 			name = ExpenseTrackerTests;
-			packageProductDependencies = (
-			);
 			productName = ExpenseTrackerTests;
 			productReference = BE38D5BC2DF6FE2700FDD712 /* ExpenseTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -188,8 +190,6 @@
 				BE38D5C92DF6FE2700FDD712 /* ExpenseTrackerUITests */,
 			);
 			name = ExpenseTrackerUITests;
-			packageProductDependencies = (
-			);
 			productName = ExpenseTrackerUITests;
 			productReference = BE38D5C62DF6FE2700FDD712 /* ExpenseTrackerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
