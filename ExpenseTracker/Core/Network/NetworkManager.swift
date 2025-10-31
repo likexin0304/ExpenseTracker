@@ -219,6 +219,18 @@ class NetworkManager {
                 // 打印请求和响应信息（调试用）
                 self.logRequest(request, data: data, response: httpResponse)
                 
+                // ✅ 对于400错误，不直接抛出错误，而是返回数据让后续解码
+                // 这样即使success=false，也能提取data.recordId等有用信息
+                if httpResponse.statusCode == 400 {
+                    // 检查数据是否为空
+                    if data.isEmpty {
+                        throw NetworkError.emptyData
+                    }
+                    // 返回数据，让后续的.decode()处理
+                    // 调用者可以在tryMap中检查success字段来决定如何处理
+                    return data
+                }
+                
                 // 检查HTTP状态码
                 if !(200...299).contains(httpResponse.statusCode) {
                     // 尝试解析错误响应

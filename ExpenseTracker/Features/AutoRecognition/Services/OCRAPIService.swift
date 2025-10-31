@@ -36,10 +36,24 @@ class OCRAPIService: ObservableObject {
             responseType: OCRParseResponse.self
         )
         .tryMap { response -> OCRParseData in
-            // 🆕 首先检查success字段
+            // ✅ 首先检查success字段
             guard response.success else {
-                print("❌ OCR解析失败 (旧格式): \(response.message ?? "未知错误")")
-                throw NetworkError.serverError(response.message ?? "OCR解析失败")
+                let errorCode = response.error ?? "UNKNOWN_ERROR"
+                let errorMessage = response.message ?? "OCR解析失败"
+                
+                print("❌ OCR解析失败: error=\(errorCode), message=\(errorMessage)")
+                
+                // ✅ 特殊处理INVALID_OCR_RECORD错误
+                if errorCode == "INVALID_OCR_RECORD" {
+                    throw NetworkError.invalidOCRRecord
+                }
+                
+                // ✅ 处理PARSE_FAILED错误
+                if errorCode == "PARSE_FAILED" || errorMessage.contains("无法从文本中提取有效") {
+                    throw NetworkError.serverError("文本解析失败：\(errorMessage)")
+                }
+                
+                throw NetworkError.serverError(errorMessage)
             }
             
             // 🆕 验证data字段是否存在
@@ -136,7 +150,7 @@ class OCRAPIService: ObservableObject {
         )
         
         let mockParseData = OCRParseData(record: mockRecord)
-        let mockResponse = OCRParseResponse(success: true, data: mockParseData, message: nil)
+        let mockResponse = OCRParseResponse(success: true, data: mockParseData, message: nil, error: nil)
         
         // 延迟返回模拟数据，模拟网络延迟
         return Just(mockResponse)
@@ -231,10 +245,11 @@ class OCRAPIService: ObservableObject {
     
     // MARK: - OCR自动处理API
     
-    /// 自动处理OCR文本
+    /// 自动处理OCR文本（调用真实API）
     /// - Parameter text: 要处理的文本
+    /// - Parameter threshold: 自动创建阈值，默认0.85
     /// - Returns: 处理结果
-    func autoProcessOCRText(_ text: String) -> AnyPublisher<OCRProcessResult, NetworkError> {
+    func autoProcessOCRText(_ text: String, threshold: Double = 0.85) -> AnyPublisher<OCRProcessResult, NetworkError> {
         print("🤖 自动处理OCR文本: \(text.prefix(50))...")
         
         // 首先检查OCR服务是否可用
@@ -243,64 +258,168 @@ class OCRAPIService: ObservableObject {
             return Fail(error: NetworkError.ocrServiceUnavailable).eraseToAnyPublisher()
         }
         
-        // 创建模拟数据而不是调用真实API
-        let mockMerchant = OCRMerchant(name: "星巴克", confidence: 0.95)
-        let mockAmount = OCRAmount(value: 35.50, currency: "CNY", confidence: 0.98)
-        let mockDate = OCRDate(value: "2024-01-15T14:30:00Z", confidence: 0.9)
-        let mockPaymentMethod = OCRPaymentMethod(type: "支付宝", confidence: 0.85)
-        let mockCategory = OCRCategory(name: "餐饮", confidence: 0.8)
+        // ✅ 调用真实的 /api/ocr/parse-auto API
+        let request = OCRAutoCreateRequest(text: text, autoCreateThreshold: threshold)
         
-        let mockParsedData = OCRParsedData(
-            merchant: mockMerchant,
-            amount: mockAmount,
-            date: mockDate,
-            paymentMethod: mockPaymentMethod,
-            category: mockCategory
+        return networkManager.request(
+            endpoint: .ocrParseAuto,
+            method: .POST,
+            body: request,
+            responseType: APIResponse<OCRAutoCreateData>.self
         )
-        
-        let mockSuggestions = OCRSuggestions(
-            autoCreate: true,
-            needsReview: false,
-            confidence: "高"
-        )
-        
-        let mockRecord = OCRRecord(
-            id: "mock_record_123",
-            originalText: text,
-            parsedData: mockParsedData,
-            confidenceScore: 0.85,
-            status: "已解析",
-            suggestions: mockSuggestions,
-            expenseId: nil,
-            errorMessage: nil,
-            createdAt: ISO8601DateFormatter().string(from: Date())
-        )
-        
-        let mockExpense = ExpenseResponse(
-            id: "mock_expense_123",
-            amount: 35.50,
-            category: "food",
-            description: "星巴克咖啡",
-            date: Date(),
-            location: "北京市朝阳区",
-            paymentMethod: "alipay",
-            tags: ["咖啡", "工作"],
-            userId: "user123",
-            createdAt: Date(),
-            updatedAt: Date()
-        )
-        
-        let mockResult = OCRProcessResult(
-            record: mockRecord,
-            expense: mockExpense,
-            autoConfirmed: false
-        )
-        
-        // 延迟返回模拟数据，模拟网络延迟
-        return Just(mockResult)
-            .delay(for: .seconds(1), scheduler: RunLoop.main)
-            .setFailureType(to: NetworkError.self)
-            .eraseToAnyPublisher()
+        .tryMap { response -> OCRProcessResult in
+            // ✅ 首先尝试提取data字段（即使success=false也可能有data和recordId）
+            guard let data = response.data else {
+                // 如果没有data，检查是否是特定错误
+                if !response.success {
+                    let errorCode = response.error ?? "UNKNOWN_ERROR"
+                    let errorMessage = response.message ?? "OCR处理失败"
+                    
+                    print("❌ OCR自动处理失败: error=\(errorCode), message=\(errorMessage)")
+                    
+                    // ✅ 特殊处理INVALID_OCR_RECORD错误
+                    if errorCode == "INVALID_OCR_RECORD" {
+                        throw NetworkError.invalidOCRRecord
+                    }
+                    
+                    throw NetworkError.serverError(errorMessage)
+                }
+                
+                print("❌ OCR响应数据缺失")
+                throw NetworkError.serverError("响应数据缺失")
+            }
+            
+            // ✅ 如果success=false但recordId存在，创建空的OCRRecord让用户手动输入
+            if !response.success {
+                let errorCode = response.error ?? "UNKNOWN_ERROR"
+                let errorMessage = response.message ?? "OCR处理失败"
+                
+                print("⚠️ OCR解析失败，但recordId存在: error=\(errorCode), recordId=\(data.recordId ?? "nil")")
+                
+                // ✅ 特殊处理INVALID_OCR_RECORD错误（不创建空记录）
+                if errorCode == "INVALID_OCR_RECORD" {
+                    throw NetworkError.invalidOCRRecord
+                }
+                
+                // ✅ 如果是解析失败（PARSE_FAILED），但recordId存在，创建空的OCRRecord
+                if errorCode == "PARSE_FAILED" || errorMessage.contains("无法从文本中提取有效") {
+                    if let recordId = data.recordId {
+                        print("✅ 创建空的OCRRecord，让用户手动输入: recordId=\(recordId)")
+                        
+                        // 创建空的OCRRecord
+                        let emptyParsedData = OCRParsedData(
+                            merchant: nil,
+                            amount: nil,
+                            date: nil,
+                            paymentMethod: nil,
+                            category: nil
+                        )
+                        
+                        let emptyRecord = OCRRecord(
+                            id: recordId,
+                            originalText: text,
+                            parsedData: emptyParsedData,
+                            confidenceScore: 0.0,  // 低置信度，需要用户确认
+                            status: "pending",  // 待处理状态
+                            suggestions: OCRSuggestions(
+                                autoCreate: false,
+                                needsReview: true,
+                                confidence: "需要手动输入"
+                            ),
+                            expenseId: nil,
+                            errorMessage: errorMessage,
+                            createdAt: ISO8601DateFormatter().string(from: Date())
+                        )
+                        
+                        print("✅ 创建空的OCRProcessResult，recordId=\(recordId)")
+                        // 返回空的OCRProcessResult
+                        return OCRProcessResult(
+                            record: emptyRecord,
+                            expense: nil,
+                            autoConfirmed: false  // 需要用户手动输入
+                        )
+                    }
+                }
+                
+                // 其他错误，正常抛出
+                throw NetworkError.serverError(errorMessage)
+            }
+            
+            // ✅ 构建OCRRecord（从ocrRecord或parsedData构建）
+            let ocrRecord: OCRRecord = {
+                if let record = data.ocrRecord {
+                    // 使用后端返回的完整OCRRecord
+                    return record
+                } else {
+                    // 从parsedData构建OCRRecord（当后端没有返回完整record时）
+                    let parsedData = data.parsedData ?? OCRParsedData(
+                        merchant: nil,
+                        amount: nil,
+                        date: nil,
+                        paymentMethod: nil,
+                        category: nil
+                    )
+                    
+                    let confidence = data.confidence ?? 0.0
+                    let suggestions = data.suggestions.map { sugg in
+                        OCRSuggestions(
+                            autoCreate: sugg.shouldAutoCreate,
+                            needsReview: sugg.needsReview,
+                            confidence: sugg.reason ?? (confidence >= 0.85 ? "高" : "中")
+                        )
+                    } ?? OCRSuggestions(
+                        autoCreate: false,
+                        needsReview: true,
+                        confidence: "中"
+                    )
+                    
+                    return OCRRecord(
+                        id: data.recordId ?? UUID().uuidString,
+                        originalText: text,
+                        parsedData: parsedData,
+                        confidenceScore: confidence,  // ✅ confidence已经是Double类型
+                        status: data.isAutoCreated ? "confirmed" : "success",  // ✅ 使用计算属性
+                        suggestions: suggestions,
+                        expenseId: data.expense?.id,
+                        errorMessage: nil,
+                        createdAt: ISO8601DateFormatter().string(from: Date())
+                    )
+                }
+            }()
+            
+            // ✅ 构建OCRProcessResult
+            let result = OCRProcessResult(
+                record: ocrRecord,
+                expense: data.expense,
+                autoConfirmed: data.isAutoCreated  // ✅ 使用计算属性
+            )
+            
+            print("✅ OCR自动处理成功: autoCreated=\(data.isAutoCreated), recordId=\(data.recordId ?? "nil")")
+            return result
+        }
+        .mapError { error -> NetworkError in
+            // ✅ 转换错误类型
+            if let networkError = error as? NetworkError {
+                // ✅ 特殊处理400错误（文本解析失败）
+                if case .httpError(400, let message) = networkError {
+                    // 检查是否是文本解析失败的错误
+                    if message.contains("无法从文本中提取有效") || message.contains("文本解析失败") {
+                        print("⚠️ 文本解析失败（400错误）: \(message)")
+                        return NetworkError.serverError("文本解析失败：\(message)")
+                    }
+                }
+                return networkError
+            }
+            
+            // ✅ 处理解码错误
+            if let decodingError = error as? DecodingError {
+                print("❌ OCR响应解码失败: \(decodingError)")
+                return NetworkError.decodingError(decodingError)
+            }
+            
+            return NetworkError.unknown(error)
+        }
+        .eraseToAnyPublisher()
     }
     
     // MARK: - OCR确认API

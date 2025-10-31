@@ -26,6 +26,7 @@ struct OCRParseResponse: Codable {
     let success: Bool
     let data: OCRParseData?
     let message: String?
+    let error: String?  // ✅ 新增：错误代码（如 "INVALID_OCR_RECORD", "PARSE_FAILED"）
 }
 
 /// OCR解析数据
@@ -35,13 +36,18 @@ struct OCRParseData: Codable {
 
 /// OCR自动创建响应数据
 struct OCRAutoCreateData: Codable {
-    let autoCreated: Bool
+    let autoCreated: Bool?  // ✅ 改为可选，因为解析失败时可能没有此字段
     let expense: ExpenseResponse?
     let ocrRecord: OCRRecord?
     let recordId: String?
     let confidence: Double?
     let parsedData: OCRParsedData?
     let suggestions: OCRAutoCreateSuggestions?
+    
+    // ✅ 计算属性：获取autoCreated值，默认为false
+    var isAutoCreated: Bool {
+        return autoCreated ?? false
+    }
 }
 
 /// OCR确认响应

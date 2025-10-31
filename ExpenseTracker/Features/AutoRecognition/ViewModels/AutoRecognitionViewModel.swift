@@ -354,32 +354,47 @@ class AutoRecognitionViewModel: ObservableObject {
         }
         
         print("🔍 步骤2: 开始OCR识别")
-        let ocrResult = await OCRService.shared.recognizeTextWithAPI(from: screenshot)
+        // ✅ 使用本地OCR识别（不调用后端API，避免重复调用）
+        let ocrResult = await OCRService.shared.recognizeTextLocally(from: screenshot)
         
         switch ocrResult {
-        case .success(let record):
-            print("✅ OCR识别成功")
-            print("📝 识别文本: \(record.originalText.prefix(100))...")
+        case .success(let ocrData):
+            print("✅ 本地OCR识别成功")
+            print("📝 识别文本: \(ocrData.text.prefix(100))...")
             
-            // ✅ 步骤3: 解析识别结果
+            // ✅ 步骤3: 直接使用后端API解析并自动创建（使用parse-auto端点）
             await MainActor.run {
                 processingStateText = "正在解析"
                 progress = 0.7
                 progressMessage = "正在解析支出信息..."
             }
             
-            print("📊 步骤3: 开始解析识别结果")
+            print("📊 步骤3: 开始解析识别结果（使用parse-auto端点）")
             
-            // 使用后端API解析OCR文本
-            OCRAPIService.shared.autoProcessOCRText(record.originalText)
+            // ✅ 直接使用parse-auto端点，避免重复调用
+            OCRAPIService.shared.autoProcessOCRText(ocrData.text)
                 .receive(on: DispatchQueue.main)
                 .sink(
                     receiveCompletion: { [weak self] completion in
                         if case .failure(let error) = completion {
                             print("❌ 后端解析失败: \(error)")
-                            if case .ocrServiceUnavailable = error {
+                            
+                            // ✅ 增强错误处理：根据错误类型显示不同的提示
+                            switch error {
+                            case .ocrServiceUnavailable:
                                 self?.handleServiceUnavailableError()
-                            } else {
+                            case .invalidOCRRecord:
+                                // ✅ 新增：OCR记录创建失败的错误处理
+                                self?.handleError("系统错误：无法创建OCR记录，请重试。\n\n如果问题持续存在，请联系技术支持。")
+                            case .serverError(let message):
+                                // ✅ 如果包含"文本解析失败"，应该已经在OCRAPIService中处理为空的OCRProcessResult
+                                // 这里只处理其他服务器错误
+                                self?.handleAutoExpenseFailure(message)
+                            case .httpError(400, let message):
+                                // ✅ 400错误如果包含"文本解析失败"，应该已经在OCRAPIService中处理
+                                // 这里只处理其他400错误
+                                self?.handleAutoExpenseFailure("请求错误: \(message)")
+                            default:
                                 self?.handleAutoExpenseFailure(error.localizedDescription)
                             }
                         }
@@ -387,33 +402,30 @@ class AutoRecognitionViewModel: ObservableObject {
                     receiveValue: { [weak self] result in
                         print("✅ 后端解析成功")
                         
-                        // ✅ 步骤4: 处理解析结果（传递record以便获取recordId）
+                        // ✅ 步骤4: 处理解析结果
                         // result是OCRProcessResult类型，包含record和expense
                         Task { @MainActor in
-                            self?.processRecognitionResult(result, rawText: record.originalText, ocrRecord: record)
+                            self?.processRecognitionResult(result, rawText: ocrData.text, ocrRecord: result.record)
                         }
                     }
                 )
                 .store(in: &cancellables)
             
         case .failure(let error):
-            print("❌ OCR识别失败: \(error)")
+            print("❌ 本地OCR识别失败: \(error)")
             
-            // ✅ 对于后端500错误，提供更友好的错误提示
+            // ✅ 本地OCR失败的错误处理
             let errorMessage: String
-            if let networkError = error as? NetworkError {
-                switch networkError {
-                case .serverError(let message):
-                    // 检查是否是500错误
-                    if message.contains("500") || message.contains("服务器内部错误") {
-                        errorMessage = "服务器暂时无法处理请求，这可能是服务器问题。\n\n请稍后重试，或联系技术支持。"
-                    } else {
-                        errorMessage = "服务器错误: \(message)"
-                    }
-                case .unauthorized, .forbidden:
-                    errorMessage = "认证失败，请重新登录"
-                case .ocrServiceUnavailable:
+            if let autoError = error as? AutoRecognitionError {
+                switch autoError {
+                case .serviceUnavailable:
                     errorMessage = "OCR服务暂时不可用，请稍后再试"
+                case .networkError(let message):
+                    errorMessage = "网络错误: \(message)"
+                case .permissionDenied:
+                    errorMessage = "需要屏幕录制权限才能识别账单\n\n请在iPhone设置 → 隐私与安全 → 屏幕录制中开启ExpenseTracker的权限。"
+                case .ocrFailure(let message), .ocrFailed(let message):
+                    errorMessage = "OCR识别失败: \(message)"
                 default:
                     errorMessage = "OCR识别失败: \(error.localizedDescription)"
                 }
@@ -448,7 +460,7 @@ class AutoRecognitionViewModel: ObservableObject {
         
         // 提取解析的数据（注意：OCRParsedData内部的字段是Optional的）
         let amount = parsedData.amount?.value ?? 0.0
-        let merchant = parsedData.merchant?.name ?? "未知商户"
+        let merchant = parsedData.merchant?.name ?? ""
         let date: Date = {
             if let dateString = parsedData.date?.value {
                 // 尝试解析日期字符串
@@ -458,38 +470,48 @@ class AutoRecognitionViewModel: ObservableObject {
             }
             return Date()
         }()
-        let paymentMethod = parsedData.paymentMethod?.type ?? "未知支付方式"
-        let category = parsedData.category?.name ?? "其他"
+        let paymentMethod = parsedData.paymentMethod?.type ?? ""
+        let category = parsedData.category?.name ?? ""
+        
+        // ✅ 检查是否是空记录（解析失败但recordId存在的情况）
+        let isEmptyRecord = amount == 0.0 && merchant.isEmpty && paymentMethod.isEmpty && category.isEmpty
         
         print("💰 解析结果:")
         print("  金额: \(amount)")
-        print("  商户: \(merchant)")
+        print("  商户: \(merchant.isEmpty ? "(空)" : merchant)")
         print("  日期: \(date)")
-        print("  支付方式: \(paymentMethod)")
-        print("  类别: \(category)")
+        print("  支付方式: \(paymentMethod.isEmpty ? "(空)" : paymentMethod)")
+        print("  类别: \(category.isEmpty ? "(空)" : category)")
         print("  置信度: \(record.confidenceScore)")
+        print("  是否为空记录: \(isEmptyRecord)")
         
         // 创建自动记账结果
         let autoExpenseData = AutoExpenseData(
             amount: amount,
-            merchant: merchant,
+            merchant: merchant.isEmpty ? nil : merchant,  // 空字符串转为nil
             date: ISO8601DateFormatter().string(from: date),
-            category: category,
-            paymentMethod: paymentMethod,
-            notes: nil,
+            category: category.isEmpty ? nil : category,  // 空字符串转为nil
+            paymentMethod: paymentMethod.isEmpty ? nil : paymentMethod,  // 空字符串转为nil
+            notes: isEmptyRecord ? "OCR无法识别，请手动输入账单信息" : nil,
             confidence: Double(record.confidenceScore),
             rawText: rawText
         )
         
-        // 根据置信度决定是否需要用户确认
+        // ✅ 如果是空记录（解析失败），总是需要用户确认
         let confidence = Double(record.confidenceScore)
-        let requiresConfirmation = requiresUserConfirmation(confidence: confidence)
+        let requiresConfirmation = isEmptyRecord || requiresUserConfirmation(confidence: confidence)
         
         if requiresConfirmation {
-            print("⚠️ 置信度较低(\(confidence))，需要用户确认")
-            processingStateText = "等待确认"
+            if isEmptyRecord {
+                print("⚠️ OCR解析失败，需要用户手动输入账单信息")
+                processingStateText = "需要手动输入"
+                progressMessage = "OCR无法识别账单信息，请手动输入..."
+            } else {
+                print("⚠️ 置信度较低(\(confidence))，需要用户确认")
+                processingStateText = "等待确认"
+                progressMessage = "识别完成，请确认信息..."
+            }
             progress = 0.9
-            progressMessage = "识别完成，请确认信息..."
         } else {
             print("✅ 置信度较高(\(confidence))，自动创建支出记录")
             processingStateText = "正在创建"
@@ -676,6 +698,7 @@ class AutoRecognitionViewModel: ObservableObject {
     }
     
     /// 映射中文支付方式名称到PaymentMethod枚举
+    /// 支持带银行名称的格式（如"工商银行信用卡"）
     private func mapPaymentMethodNameToEnum(_ name: String) -> PaymentMethod? {
         let mapping: [String: PaymentMethod] = [
             "现金": .cash,
@@ -690,12 +713,30 @@ class AutoRecognitionViewModel: ObservableObject {
             "其他": .other
         ]
         
-        // 先尝试直接匹配
+        // ✅ 先尝试直接匹配
         if let method = mapping[name] {
             return method
         }
         
-        // 尝试使用rawValue匹配（如果后端返回的是英文）
+        // ✅ 处理带银行名称的格式（如"工商银行信用卡"、"建设银行借记卡"）
+        // 提取支付方式类型（移除银行名称）
+        let paymentTypeKeywords = [
+            "信用卡": "信用卡",
+            "借记卡": "借记卡",
+            "银行卡": "银行卡",
+            "储蓄卡": "借记卡"
+        ]
+        
+        for (keyword, type) in paymentTypeKeywords {
+            if name.contains(keyword) {
+                // 找到对应的支付方式类型
+                if let method = mapping[type] {
+                    return method
+                }
+            }
+        }
+        
+        // ✅ 尝试使用rawValue匹配（如果后端返回的是英文）
         return PaymentMethod(rawValue: name.lowercased())
     }
     

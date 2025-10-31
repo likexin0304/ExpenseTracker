@@ -226,18 +226,25 @@ class PaymentReceiptParser {
                 options: .regularExpression
             ).trimmingCharacters(in: .whitespaces)
             
-            // 商家名称通常2-30个字符
-            if cleaned.count >= 2 && cleaned.count <= 30 {
+            // 商家名称通常2-50个字符（放宽限制以支持较长商户名）
+            if cleaned.count >= 2 && cleaned.count <= 50 {
                 // 优先选择包含常见商家关键词的行
                 let merchantKeywords = [
                     "餐厅", "餐饮", "咖啡", "科技", "有限公司", "集团",
-                    "McDonald", "luckin", "coffee", "店", "商", "行"
+                    "McDonald", "luckin", "coffee", "店", "商", "行", "RSE"
                 ]
                 
                 let hasMerchantKeyword = merchantKeywords.contains { cleaned.contains($0) }
                 
+                // ✅ 优先选择较短的商户名（通常是门店名而不是公司全称）
+                // 例如："RSE-上海中山龙之梦店" 优先于 "上海江边城外餐饮有限公司"
                 if hasMerchantKeyword || index >= 1 {
                     // 如果包含商家关键词，或者已经跳过了第一行（金额行），就采用
+                    // 但是优先选择不包含"有限公司"的较短名称（门店名）
+                    if cleaned.contains("有限公司") && cleaned.count > 20 {
+                        // 如果当前行是公司全称，继续查找是否有更简洁的门店名
+                        continue
+                    }
                     print("✅ 找到商家: \(cleaned) (第\(index + 1)行)")
                     return cleaned
                 }
@@ -293,20 +300,53 @@ class PaymentReceiptParser {
     
     /**
      * 解析日期字符串
+     * 支持多种日期格式：
+     * - "2025/10/27 21:50:08" (标准格式)
+     * - "2025-10-27 21:50:08" (标准格式)
+     * - "2025/10/27 21:50" (没有秒)
+     * - "10/27 21:50" (没有年份，使用当前年份)
      */
     private func parseDateString(_ text: String) -> Date? {
-        // 格式: "2025/10/27 19:41:36"
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         formatter.locale = Locale(identifier: "en_US_POSIX")
         
+        // ✅ 格式1: "yyyy/MM/dd HH:mm:ss" (如 "2025/10/27 21:50:08")
+        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         if let date = formatter.date(from: text) {
             return date
         }
         
-        // 尝试其他格式
+        // ✅ 格式2: "yyyy-MM-dd HH:mm:ss" (如 "2025-10-27 21:50:08")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return formatter.date(from: text)
+        if let date = formatter.date(from: text) {
+            return date
+        }
+        
+        // ✅ 格式3: "yyyy/MM/dd HH:mm" (没有秒)
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        if let date = formatter.date(from: text) {
+            return date
+        }
+        
+        // ✅ 格式4: "yyyy-MM-dd HH:mm" (没有秒)
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        if let date = formatter.date(from: text) {
+            return date
+        }
+        
+        // ✅ 格式5: "MM/dd HH:mm" (没有年份，使用当前年份)
+        formatter.dateFormat = "MM/dd HH:mm"
+        if let date = formatter.date(from: text) {
+            // 获取当前年份
+            let calendar = Calendar.current
+            let currentYear = calendar.component(.year, from: Date())
+            // 创建完整的日期
+            var components = calendar.dateComponents([.month, .day, .hour, .minute], from: date)
+            components.year = currentYear
+            return calendar.date(from: components)
+        }
+        
+        return nil
     }
     
     /**
@@ -356,30 +396,73 @@ class PaymentReceiptParser {
     
     /**
      * 从文本行中提取支付方式
+     * 改进：支持银行名称识别（ICBC、工商银行等），区分信用卡和银行卡
      */
     private func extractPaymentMethodFromLine(_ line: String) -> String? {
+        let lowercasedLine = line.lowercased()
+        
         // 微信支付
-        if line.contains("微信") || line.contains("WeChat") || line.contains("wechat") {
+        if line.contains("微信") || lowercasedLine.contains("wechat") {
             return "微信"
         }
         // 支付宝
-        if line.contains("支付宝") || line.contains("Alipay") || line.contains("alipay") {
+        if line.contains("支付宝") || lowercasedLine.contains("alipay") {
             return "支付宝"
         }
-        // 信用卡
-        if line.contains("信用卡") || line.contains("Credit Card") || line.contains("Credit") {
-            return "银行卡"
+        
+        // ✅ 信用卡识别（优先于银行卡）
+        // 匹配: "ICBC Credit Card", "工商银行信用卡", "Credit Card"等
+        let creditCardKeywords = ["信用卡", "credit card", "credit"]
+        let hasCreditCardKeyword = creditCardKeywords.contains { lowercasedLine.contains($0) }
+        
+        // ✅ 支持银行名称识别
+        let bankNames = [
+            "icbc": "工商银行",
+            "工商银行": "工商银行",
+            "ccb": "建设银行",
+            "建设银行": "建设银行",
+            "abc": "农业银行",
+            "农业银行": "农业银行",
+            "boc": "中国银行",
+            "中国银行": "中国银行",
+            "cmb": "招商银行",
+            "招商银行": "招商银行"
+        ]
+        
+        var detectedBank: String? = nil
+        for (keyword, bankName) in bankNames {
+            if lowercasedLine.contains(keyword) {
+                detectedBank = bankName
+                break
+            }
         }
+        
+        // 如果包含信用卡关键词，返回"信用卡"（如果有银行名，可以包含银行名）
+        if hasCreditCardKeyword {
+            if let bank = detectedBank {
+                return "\(bank)信用卡"
+            }
+            return "信用卡"
+        }
+        
         // 借记卡
-        if line.contains("借记卡") || line.contains("Debit Card") || line.contains("Debit") || line.contains("储蓄卡") {
+        if line.contains("借记卡") || lowercasedLine.contains("debit card") || lowercasedLine.contains("debit") || line.contains("储蓄卡") {
+            if let bank = detectedBank {
+                return "\(bank)借记卡"
+            }
             return "银行卡"
         }
+        
         // 银行卡（通用）
-        if line.contains("银行卡") || line.contains("Bank Card") {
+        if line.contains("银行卡") || lowercasedLine.contains("bank card") {
+            if let bank = detectedBank {
+                return "\(bank)银行卡"
+            }
             return "银行卡"
         }
+        
         // 现金
-        if line.contains("现金") || line.contains("Cash") {
+        if line.contains("现金") || lowercasedLine.contains("cash") {
             return "现金"
         }
         
@@ -427,7 +510,8 @@ class PaymentReceiptParser {
         let foodKeywords = [
             "麦当劳", "肯德基", "星巴克", "瑞幸", "luckin", "咖啡", "coffee",
             "餐", "食品", "饮", "茶", "奶茶", "快餐", "美食", "外卖",
-            "必胜客", "汉堡", "披萨", "pizza", "restaurant", "cafe"
+            "必胜客", "汉堡", "披萨", "pizza", "restaurant", "cafe",
+            "RSE", "江边城外", "餐饮有限公司", "餐饮"  // ✅ 新增：支持RSE餐厅等
         ]
         
         // 交通

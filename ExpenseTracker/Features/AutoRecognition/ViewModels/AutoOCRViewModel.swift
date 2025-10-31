@@ -55,7 +55,8 @@ class AutoOCRViewModel: ObservableObject {
                                 errorMessage: nil,
                                 createdAt: ISO8601DateFormatter().string(from: Date())
                             )),
-                            message: nil
+                            message: nil,
+                            error: nil
                         )
                         
                         let historyItem = AutoOCRHistoryItem(

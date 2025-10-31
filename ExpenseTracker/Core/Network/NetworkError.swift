@@ -16,6 +16,7 @@ enum NetworkError: Error, Equatable {
     case decodingError(Error)
     case emptyData
     case ocrServiceUnavailable
+    case invalidOCRRecord  // ✅ 新增：OCR记录创建失败
     case unknown(Error)
     
     var localizedDescription: String {
@@ -42,6 +43,8 @@ enum NetworkError: Error, Equatable {
             return "返回数据为空"
         case .ocrServiceUnavailable:
             return "OCR服务暂时不可用"
+        case .invalidOCRRecord:
+            return "OCR记录创建失败，请重试"
         case .unknown:
             return "未知错误"
         }
@@ -55,7 +58,8 @@ enum NetworkError: Error, Equatable {
              (.unauthorized, .unauthorized),
              (.forbidden, .forbidden),
              (.emptyData, .emptyData),
-             (.ocrServiceUnavailable, .ocrServiceUnavailable):
+             (.ocrServiceUnavailable, .ocrServiceUnavailable),
+             (.invalidOCRRecord, .invalidOCRRecord):
             return true
         case (.notFound(let lhsMessage), .notFound(let rhsMessage)):
             return lhsMessage == rhsMessage
