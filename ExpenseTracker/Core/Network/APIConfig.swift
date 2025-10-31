@@ -12,7 +12,7 @@ struct APIConfig {
     private static let developmentURL = "http://192.168.1.100:3000" // 将替换为实际的局域网IP
     private static let productionURL: String = {
         guard let url = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String else {
-            return "https://expense-tracker-backend-likexin0304s-projects.vercel.app"
+            return "https://expense-tracker-backend-ebg74cxgf-likexin0304s-projects.vercel.app"
         }
         return url
     }()

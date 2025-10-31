@@ -14,7 +14,7 @@
 	<key>SUPABASE_ANON_KEY</key>
 	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5scnRqbnZ3Z3NhYXZ0cGZjY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzU3MDgsImV4cCI6MjA2NTY1MTcwOH0.5r2tzDOV1T1Lkz_Mtujq35VBBfo77SCh6H__rUSHQCo</string>
 	<key>API_BASE_URL</key>
-	<string>https://expense-tracker-backend-likexin0304s-projects.vercel.app</string>
+	<string>https://expense-tracker-backend-ebg74cxgf-likexin0304s-projects.vercel.app</string>
 	
 	<!-- URL Scheme配置 -->
 	<key>CFBundleURLTypes</key>

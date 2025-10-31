@@ -302,7 +302,15 @@ class OCRAPIService: ObservableObject {
                 }
                 
                 // ✅ 如果是解析失败（PARSE_FAILED），但recordId存在，创建空的OCRRecord
-                if errorCode == "PARSE_FAILED" || errorMessage.contains("无法从文本中提取有效") {
+                // 检查errorCode或errorMessage中是否包含解析失败的关键词
+                let isParseFailed = errorCode == "PARSE_FAILED" || 
+                                   errorCode.contains("无法从文本中提取有效") ||
+                                   errorCode.contains("无法从文本中提取") ||
+                                   errorMessage.contains("无法从文本中提取有效") ||
+                                   errorMessage.contains("无法从文本中提取") ||
+                                   errorMessage.contains("文本解析失败")
+                
+                if isParseFailed {
                     if let recordId = data.recordId {
                         print("✅ 创建空的OCRRecord，让用户手动输入: recordId=\(recordId)")
                         

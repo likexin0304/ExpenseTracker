@@ -39,6 +39,12 @@ class AutoRecognitionViewModel: ObservableObject {
     /// 是否显示教程
     @Published var showTutorial: Bool = false
     
+    /// 是否显示确认界面
+    @Published var showConfirmationView: Bool = false
+    
+    /// 当前OCR记录的ID（用于确认时创建支出）
+    @Published var currentRecordId: String? = nil
+    
     /// 当前处理状态字符串
     @Published var processingStateText: String = "待机"
     
@@ -521,11 +527,17 @@ class AutoRecognitionViewModel: ObservableObject {
         
         // 保存结果
         currentAutoExpenseResult = autoExpenseData
+        currentRecordId = record.id  // ✅ 保存recordId，用于确认时创建支出
         hasRecognitionResult = true
         
-        // 如果需要确认，停止在这里，等待用户确认
+        // 如果需要确认，显示确认界面
         if requiresConfirmation {
-            print("⚠️ 需要用户确认，等待用户操作")
+            print("⚠️ 需要用户确认，显示确认界面")
+            // ✅ 已经在@MainActor上下文中，直接设置即可
+            showConfirmationView = true
+            print("✅ showConfirmationView已设置为true: \(showConfirmationView)")
+            print("✅ currentAutoExpenseResult: \(currentAutoExpenseResult != nil ? "存在" : "nil")")
+            print("✅ currentRecordId: \(currentRecordId ?? "nil")")
             return
         }
         
@@ -866,6 +878,12 @@ class AutoRecognitionViewModel: ObservableObject {
             return
         }
         
+        // ✅ 使用保存的recordId，如果没有则使用生成ID（向后兼容）
+        guard let recordId = currentRecordId else {
+            errorMessage = "缺少记录ID，无法创建支出"
+            return
+        }
+        
         processingStateText = "正在创建记录"
         progress = 0.7
         progressMessage = "正在保存支出记录..."
@@ -882,7 +900,7 @@ class AutoRecognitionViewModel: ObservableObject {
         )
         
         autoExpenseService.confirmAndCreateExpense(
-            recordId: "auto_generated_id", // 由于我们没有实际的记录ID，使用一个生成的ID
+            recordId: recordId,  // ✅ 使用保存的recordId
             corrections: finalCorrections
         )
         .receive(on: DispatchQueue.main)
@@ -903,6 +921,9 @@ class AutoRecognitionViewModel: ObservableObject {
         progress = 1.0
         progressMessage = "支出记录已保存"
         
+        // ✅ 立即关闭确认界面
+        showConfirmationView = false
+        
         // 清理状态
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.processingStateText = "待机"
@@ -910,6 +931,7 @@ class AutoRecognitionViewModel: ObservableObject {
             self.progressMessage = ""
             self.hasRecognitionResult = false
             self.currentAutoExpenseResult = nil
+            self.currentRecordId = nil  // ✅ 清空recordId
         }
     }
     

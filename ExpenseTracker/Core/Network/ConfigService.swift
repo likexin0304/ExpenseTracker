@@ -45,7 +45,7 @@ class ConfigService {
     
     // 默认配置（作为降级方案）
     private let defaultConfiguration = APIConfiguration(
-        baseURL: "https://expense-tracker-backend-likexin0304s-projects.vercel.app",
+        baseURL: "https://expense-tracker-backend-ebg74cxgf-likexin0304s-projects.vercel.app",
         supabaseURL: "https://nlrtjnvwgsaavtpfccxg.supabase.co",
         version: "1.0.0",
         endpoints: nil,

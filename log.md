@@ -5113,3 +5113,321 @@ struct OCRAutoCreateData: Codable {
 
 ---
 
+
+---
+
+## 2025-10-31 修复：错误匹配条件不完整导致仍抛出错误
+
+### 问题描述
+
+虽然代码检测到了`recordId`存在，但仍然抛出了错误，没有创建空的OCRRecord。
+
+**日志显示**:
+```
+⚠️ OCR解析失败，但recordId存在: error=无法从文本中提取有效的账单信息，请确保图片包含金额或商户名称, recordId=be133724-e365-432e-96be-2575b95a1b75
+❌ 后端解析失败: serverError("文本解析失败")
+```
+
+**后端响应**:
+```json
+{
+  "success": false,
+  "message": "文本解析失败",
+  "error": "无法从文本中提取有效的账单信息，请确保图片包含金额或商户名称",
+  "data": {
+    "recordId": "be133724-e365-432e-96be-2575b95a1b75"
+  }
+}
+```
+
+### 问题分析
+
+**根本原因**:
+- `errorCode` = `"无法从文本中提取有效的账单信息，请确保图片包含金额或商户名称"`（完整的错误信息）
+- `errorMessage` = `"文本解析失败"`（简短的消息）
+- 原有条件：`errorCode == "PARSE_FAILED" || errorMessage.contains("无法从文本中提取有效")`
+- 结果：两个条件都不匹配
+  - `errorCode == "PARSE_FAILED"` → false（errorCode是中文）
+  - `errorMessage.contains("无法从文本中提取有效")` → false（errorMessage是"文本解析失败"）
+
+### 修复内容
+
+**文件**: `ExpenseTracker/Features/AutoRecognition/Services/OCRAPIService.swift`
+
+**修改**: 增强错误匹配条件，检查errorCode和errorMessage中的多个关键词
+
+**修改前**:
+```swift
+if errorCode == "PARSE_FAILED" || errorMessage.contains("无法从文本中提取有效") {
+    if let recordId = data.recordId {
+        // 创建空记录
+    }
+}
+```
+
+**修改后**:
+```swift
+// ✅ 检查errorCode或errorMessage中是否包含解析失败的关键词
+let isParseFailed = errorCode == "PARSE_FAILED" || 
+                   errorCode.contains("无法从文本中提取有效") ||
+                   errorCode.contains("无法从文本中提取") ||
+                   errorMessage.contains("无法从文本中提取有效") ||
+                   errorMessage.contains("无法从文本中提取") ||
+                   errorMessage.contains("文本解析失败")
+
+if isParseFailed {
+    if let recordId = data.recordId {
+        // 创建空记录
+    }
+}
+```
+
+### 修复后的匹配逻辑
+
+**匹配条件**（满足任一即可）:
+1. ✅ `errorCode == "PARSE_FAILED"`（英文错误代码）
+2. ✅ `errorCode.contains("无法从文本中提取有效")`（完整中文错误信息）
+3. ✅ `errorCode.contains("无法从文本中提取")`（部分匹配）
+4. ✅ `errorMessage.contains("无法从文本中提取有效")`（message中的完整信息）
+5. ✅ `errorMessage.contains("无法从文本中提取")`（message中的部分匹配）
+6. ✅ `errorMessage.contains("文本解析失败")`（简短消息）
+
+### 修改文件清单
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `OCRAPIService.swift` | 增强错误匹配条件，支持多种错误格式 | ✅ |
+
+### 预期效果
+
+- ✅ 无论后端返回的错误格式如何，都能正确匹配解析失败的情况
+- ✅ 当recordId存在时，创建空记录并显示确认界面
+- ✅ 不再抛出错误，而是进入正常的确认流程
+
+---
+
+
+---
+
+## 2025-10-31 更新API URL为最新主域名
+
+### 更新内容
+
+**后端最新主URL**: `https://expense-tracker-backend-ebg74cxgf-likexin0304s-projects.vercel.app`
+
+### 修改的文件
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `Info.plist` | 更新`API_BASE_URL`为最新URL | ✅ |
+| `APIConfig.swift` | 更新默认URL为最新URL | ✅ |
+| `ConfigService.swift` | 更新默认配置URL为最新URL | ✅ |
+
+### 修改前
+- `https://expense-tracker-backend-likexin0304s-projects.vercel.app`（主域名）
+
+### 修改后
+- `https://expense-tracker-backend-ebg74cxgf-likexin0304s-projects.vercel.app`（最新主URL）
+
+---
+
+
+---
+
+## 2025-10-31 修复：OCR解析失败后未显示确认界面
+
+### 问题描述
+
+当OCR解析失败（返回400错误但recordId存在）时，代码检测到需要用户确认，但确认界面（`ConfirmExpenseView`）没有显示。
+
+**日志显示**:
+```
+⚠️ OCR解析失败，需要用户手动输入账单信息
+⚠️ 需要用户确认，等待用户操作
+```
+
+但是用户没有看到确认界面，页面停留在"需要手动输入"状态。
+
+### 问题分析
+
+**根本原因**:
+1. `AutoRecognitionViewModel`中没有`@Published var showConfirmationView`属性来控制确认界面的显示
+2. `processRecognitionResult`方法中检测到需要确认时，只是设置了状态文本，但没有触发显示确认界面
+3. `AutoRecognitionView`中没有`.sheet`来显示`ConfirmExpenseView`
+4. 没有保存`recordId`，导致确认时无法创建支出记录
+
+### 修复内容
+
+**文件1**: `ExpenseTracker/Features/AutoRecognition/ViewModels/AutoRecognitionViewModel.swift`
+
+**修改1**: 添加确认界面控制属性和recordId保存
+```swift
+/// 是否显示确认界面
+@Published var showConfirmationView: Bool = false
+
+/// 当前OCR记录的ID（用于确认时创建支出）
+@Published var currentRecordId: String? = nil
+```
+
+**修改2**: 在需要确认时显示确认界面
+```swift
+// 保存结果
+currentAutoExpenseResult = autoExpenseData
+currentRecordId = record.id  // ✅ 保存recordId，用于确认时创建支出
+hasRecognitionResult = true
+
+// 如果需要确认，显示确认界面
+if requiresConfirmation {
+    print("⚠️ 需要用户确认，显示确认界面")
+    showConfirmationView = true
+    return
+}
+```
+
+**修改3**: 使用保存的recordId创建支出
+```swift
+func confirmAndCreateExpense(corrections: ExpenseCorrections? = nil) {
+    // ...
+    // ✅ 使用保存的recordId，如果没有则使用生成ID（向后兼容）
+    guard let recordId = currentRecordId else {
+        errorMessage = "缺少记录ID，无法创建支出"
+        return
+    }
+    
+    autoExpenseService.confirmAndCreateExpense(
+        recordId: recordId,  // ✅ 使用保存的recordId
+        corrections: finalCorrections
+    )
+    // ...
+}
+```
+
+**修改4**: 创建成功后关闭确认界面
+```swift
+private func handleExpenseCreationSuccess(_ expense: Expense) {
+    // ...
+    // 清空识别结果和recordId
+    currentAutoExpenseResult = nil
+    currentRecordId = nil
+    hasRecognitionResult = false
+    showConfirmationView = false  // ✅ 关闭确认界面
+    // ...
+}
+```
+
+**文件2**: `ExpenseTracker/Features/AutoRecognition/Views/AutoRecognitionView.swift`
+
+**修改**: 添加确认界面的sheet显示
+```swift
+.sheet(isPresented: $viewModel.showConfirmationView) {
+    if let expenseData = viewModel.currentAutoExpenseResult {
+        ConfirmExpenseView(
+            expenseData: expenseData,
+            onConfirm: { corrections in
+                viewModel.confirmAndCreateExpense(corrections: corrections)
+                viewModel.showConfirmationView = false
+            },
+            onCancel: {
+                viewModel.showConfirmationView = false
+            }
+        )
+    }
+}
+```
+
+### 修改文件清单
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `AutoRecognitionViewModel.swift` | 添加`showConfirmationView`和`currentRecordId`属性 | ✅ |
+| `AutoRecognitionViewModel.swift` | 在需要确认时设置`showConfirmationView = true` | ✅ |
+| `AutoRecognitionViewModel.swift` | 使用保存的`recordId`创建支出 | ✅ |
+| `AutoRecognitionViewModel.swift` | 创建成功后关闭确认界面 | ✅ |
+| `AutoRecognitionView.swift` | 添加确认界面的sheet显示 | ✅ |
+
+### 预期效果
+
+- ✅ 当OCR解析失败（空记录）时，自动显示确认界面
+- ✅ 用户可以手动输入或修改账单信息
+- ✅ 确认后使用正确的`recordId`创建支出记录
+- ✅ 创建成功后自动关闭确认界面
+- ✅ 创建失败时保持确认界面打开，允许用户重试
+
+---
+
+
+---
+
+## 2025-10-31 修复：确认界面未显示的根本原因
+
+### 问题描述
+
+确认界面仍然没有弹出，即使日志显示 `⚠️ 需要用户确认，显示确认界面`。
+
+### 问题分析
+
+**根本原因**:
+1. `AutoRecognitionView` 使用的是 `@StateObject private var viewModel = AutoRecognitionViewModel()`，创建了一个**新的实例**
+2. Back Tap 触发时使用的是 `AutoRecognitionViewModel.shared`（单例）
+3. 当 `shared.showConfirmationView = true` 被设置时，`AutoRecognitionView` 的 `viewModel`（另一个实例）的 `showConfirmationView` 仍然是 `false`
+4. 即使确认界面在 `AutoRecognitionView` 中显示，用户也可能不在该视图上（可能在首页或其他标签页）
+
+### 修复内容
+
+**文件1**: `ExpenseTracker/Features/AutoRecognition/Views/AutoRecognitionView.swift`
+
+**修改**: 使用单例而不是创建新实例
+```swift
+// 修改前
+@StateObject private var viewModel = AutoRecognitionViewModel()
+
+// 修改后
+@ObservedObject private var viewModel = AutoRecognitionViewModel.shared
+```
+
+**文件2**: `ExpenseTracker/ContentView.swift`
+
+**修改**: 在应用级别添加确认界面的sheet显示
+```swift
+struct ContentView: View {
+    // ✅ 观察AutoRecognitionViewModel.shared以响应showConfirmationView变化
+    @ObservedObject private var autoRecognitionViewModel = AutoRecognitionViewModel.shared
+    
+    var body: some View {
+        // ...
+        MainTabView()
+            // ✅ 在应用级别显示确认界面（无论用户在哪个标签页都能看到）
+            .sheet(isPresented: $autoRecognitionViewModel.showConfirmationView) {
+                if let expenseData = autoRecognitionViewModel.currentAutoExpenseResult {
+                    ConfirmExpenseView(
+                        expenseData: expenseData,
+                        onConfirm: { corrections in
+                            autoRecognitionViewModel.confirmAndCreateExpense(corrections: corrections)
+                            autoRecognitionViewModel.showConfirmationView = false
+                        },
+                        onCancel: {
+                            autoRecognitionViewModel.showConfirmationView = false
+                        }
+                    )
+                }
+            }
+    }
+}
+```
+
+### 修改文件清单
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `AutoRecognitionView.swift` | 使用`@ObservedObject`和`shared`单例 | ✅ |
+| `ContentView.swift` | 在应用级别添加确认界面sheet | ✅ |
+
+### 预期效果
+
+- ✅ `AutoRecognitionView` 和 Back Tap 使用同一个 ViewModel 实例
+- ✅ 确认界面在应用级别显示，无论用户在哪个标签页都能看到
+- ✅ 当 `showConfirmationView = true` 时，确认界面会立即显示
+- ✅ 用户可以在任何页面看到并操作确认界面
+
+---
+

@@ -2,8 +2,8 @@ import SwiftUI
 
 /// 自动识别视图
 struct AutoRecognitionView: View {
-    /// 视图模型
-    @StateObject private var viewModel = AutoRecognitionViewModel()
+    /// 视图模型（使用单例，确保与Back Tap触发使用同一个实例）
+    @ObservedObject private var viewModel = AutoRecognitionViewModel.shared
     
     /// 是否显示设置
     @State private var showSettings = false
@@ -64,6 +64,20 @@ struct AutoRecognitionView: View {
                 AutoRecognitionLogsView(logs: viewModel.backTapLogs, onClear: {
                     viewModel.clearLogs()
                 })
+            }
+            .sheet(isPresented: $viewModel.showConfirmationView) {
+                if let expenseData = viewModel.currentAutoExpenseResult {
+                    ConfirmExpenseView(
+                        expenseData: expenseData,
+                        onConfirm: { corrections in
+                            viewModel.confirmAndCreateExpense(corrections: corrections)
+                            viewModel.showConfirmationView = false
+                        },
+                        onCancel: {
+                            viewModel.showConfirmationView = false
+                        }
+                    )
+                }
             }
         }
     }

@@ -9,6 +9,8 @@ struct ContentView: View {
     // MARK: - 状态管理
     @StateObject private var authService = AuthService.shared
     @StateObject private var budgetViewModel = BudgetViewModel()
+    // ✅ 观察AutoRecognitionViewModel.shared以响应showConfirmationView变化
+    @ObservedObject private var autoRecognitionViewModel = AutoRecognitionViewModel.shared
     
     var body: some View {
         Group {
@@ -19,6 +21,21 @@ struct ContentView: View {
                     .onAppear {
                         print("✅ 显示主应用界面 - 用户已认证")
                         print("👤 当前用户: \(authService.currentUser?.email ?? "nil")")
+                    }
+                    // ✅ 在应用级别显示确认界面（无论用户在哪个标签页都能看到）
+                    .sheet(isPresented: $autoRecognitionViewModel.showConfirmationView) {
+                        if let expenseData = autoRecognitionViewModel.currentAutoExpenseResult {
+                            ConfirmExpenseView(
+                                expenseData: expenseData,
+                                onConfirm: { corrections in
+                                    autoRecognitionViewModel.confirmAndCreateExpense(corrections: corrections)
+                                    autoRecognitionViewModel.showConfirmationView = false
+                                },
+                                onCancel: {
+                                    autoRecognitionViewModel.showConfirmationView = false
+                                }
+                            )
+                        }
                     }
             } else {
                 // 未登录：显示认证界面
