@@ -117,11 +117,11 @@ class OCRAPIService: ObservableObject {
         print("🖼️ 处理图像...")
         
         // 模拟图像处理结果
-        let mockMerchant = OCRMerchant(name: "星巴克", confidence: 0.95)
-        let mockAmount = OCRAmount(value: 35.50, currency: "CNY", confidence: 0.98)
-        let mockDate = OCRDate(value: "2024-01-15T14:30:00Z", confidence: 0.9)
-        let mockPaymentMethod = OCRPaymentMethod(type: "支付宝", confidence: 0.85)
-        let mockCategory = OCRCategory(name: "餐饮", confidence: 0.8)
+        let mockMerchant = OCRMerchant(value: "星巴克", confidence: 0.95, originalText: nil)
+        let mockAmount = OCRAmount(value: 35.50, currency: "CNY", confidence: 0.98, originalText: nil)
+        let mockDate = OCRDate(value: "2024-01-15T14:30:00Z", confidence: 0.9, originalText: nil)
+        let mockPaymentMethod = OCRPaymentMethod(value: "支付宝", confidence: 0.85, originalText: nil)
+        let mockCategory = OCRCategory(value: "餐饮", confidence: 0.8, source: nil)
         
         let mockParsedData = OCRParsedData(
             merchant: mockMerchant,

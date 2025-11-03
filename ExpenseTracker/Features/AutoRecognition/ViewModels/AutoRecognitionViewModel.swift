@@ -375,47 +375,67 @@ class AutoRecognitionViewModel: ObservableObject {
                 progressMessage = "正在解析支出信息..."
             }
             
-            print("📊 步骤3: 开始解析识别结果（使用parse-auto端点）")
+            print("📊 步骤3: 开始解析识别结果")
             
-            // ✅ 直接使用parse-auto端点，避免重复调用
-            OCRAPIService.shared.autoProcessOCRText(ocrData.text)
-                .receive(on: DispatchQueue.main)
-                .sink(
-                    receiveCompletion: { [weak self] completion in
-                        if case .failure(let error) = completion {
-                            print("❌ 后端解析失败: \(error)")
+            // ✅ 先尝试前端解析（针对高频账单类型优化）
+            let frontendResult = ReceiptParserRouter.shared.parseReceipt(ocrData.text)
+            
+            print("📊 前端解析结果: 置信度=\(String(format: "%.2f", frontendResult.confidence)), 有效=\(frontendResult.isValid)")
+            
+            // ✅ 如果前端解析成功且置信度高（≥0.8），直接使用前端结果
+            if frontendResult.confidence >= 0.8 && frontendResult.isValid {
+                print("✅ 前端解析成功且置信度高，直接使用前端结果")
+                
+                // 转换为OCRProcessResult格式
+                let ocrProcessResult = ReceiptParserRouter.shared.convertToOCRProcessResult(frontendResult, rawText: ocrData.text)
+                
+                // 处理识别结果
+                Task { @MainActor in
+                    self.processRecognitionResult(ocrProcessResult, rawText: ocrData.text, ocrRecord: ocrProcessResult.record)
+                }
+            } else {
+                // ✅ 否则调用后端API（兜底）
+                print("⚠️ 前端解析失败或置信度低，调用后端API作为兜底")
+                
+                OCRAPIService.shared.autoProcessOCRText(ocrData.text)
+                    .receive(on: DispatchQueue.main)
+                    .sink(
+                        receiveCompletion: { [weak self] completion in
+                            if case .failure(let error) = completion {
+                                print("❌ 后端解析失败: \(error)")
+                                
+                                // ✅ 增强错误处理：根据错误类型显示不同的提示
+                                switch error {
+                                case .ocrServiceUnavailable:
+                                    self?.handleServiceUnavailableError()
+                                case .invalidOCRRecord:
+                                    // ✅ 新增：OCR记录创建失败的错误处理
+                                    self?.handleError("系统错误：无法创建OCR记录，请重试。\n\n如果问题持续存在，请联系技术支持。")
+                                case .serverError(let message):
+                                    // ✅ 如果包含"文本解析失败"，应该已经在OCRAPIService中处理为空的OCRProcessResult
+                                    // 这里只处理其他服务器错误
+                                    self?.handleAutoExpenseFailure(message)
+                                case .httpError(400, let message):
+                                    // ✅ 400错误如果包含"文本解析失败"，应该已经在OCRAPIService中处理
+                                    // 这里只处理其他400错误
+                                    self?.handleAutoExpenseFailure("请求错误: \(message)")
+                                default:
+                                    self?.handleAutoExpenseFailure(error.localizedDescription)
+                                }
+                            }
+                        },
+                        receiveValue: { [weak self] result in
+                            print("✅ 后端解析成功")
                             
-                            // ✅ 增强错误处理：根据错误类型显示不同的提示
-                            switch error {
-                            case .ocrServiceUnavailable:
-                                self?.handleServiceUnavailableError()
-                            case .invalidOCRRecord:
-                                // ✅ 新增：OCR记录创建失败的错误处理
-                                self?.handleError("系统错误：无法创建OCR记录，请重试。\n\n如果问题持续存在，请联系技术支持。")
-                            case .serverError(let message):
-                                // ✅ 如果包含"文本解析失败"，应该已经在OCRAPIService中处理为空的OCRProcessResult
-                                // 这里只处理其他服务器错误
-                                self?.handleAutoExpenseFailure(message)
-                            case .httpError(400, let message):
-                                // ✅ 400错误如果包含"文本解析失败"，应该已经在OCRAPIService中处理
-                                // 这里只处理其他400错误
-                                self?.handleAutoExpenseFailure("请求错误: \(message)")
-                            default:
-                                self?.handleAutoExpenseFailure(error.localizedDescription)
+                            // ✅ 步骤4: 处理解析结果
+                            // result是OCRProcessResult类型，包含record和expense
+                            Task { @MainActor in
+                                self?.processRecognitionResult(result, rawText: ocrData.text, ocrRecord: result.record)
                             }
                         }
-                    },
-                    receiveValue: { [weak self] result in
-                        print("✅ 后端解析成功")
-                        
-                        // ✅ 步骤4: 处理解析结果
-                        // result是OCRProcessResult类型，包含record和expense
-                        Task { @MainActor in
-                            self?.processRecognitionResult(result, rawText: ocrData.text, ocrRecord: result.record)
-                        }
-                    }
-                )
-                .store(in: &cancellables)
+                    )
+                    .store(in: &cancellables)
+            }
             
         case .failure(let error):
             print("❌ 本地OCR识别失败: \(error)")

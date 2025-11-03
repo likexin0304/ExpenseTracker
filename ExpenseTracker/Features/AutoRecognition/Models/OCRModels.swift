@@ -78,33 +78,53 @@ struct OCRStatisticsData: Codable {
 
 /// OCR商户信息
 struct OCRMerchant: Codable {
-    let name: String
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "name"
     let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+    
+    // 兼容性：提供 name 计算属性
+    var name: String {
+        return value
+    }
 }
 
 /// OCR金额信息
 struct OCRAmount: Codable {
     let value: Double
-    let currency: String
+    let currency: String?  // ✅ 修改为可选：后端可能不返回
     let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
 }
 
 /// OCR日期信息
 struct OCRDate: Codable {
     let value: String
     let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
 }
 
 /// OCR支付方式
 struct OCRPaymentMethod: Codable {
-    let type: String
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "type"
     let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+    
+    // 兼容性：提供 type 计算属性
+    var type: String {
+        return value
+    }
 }
 
 /// OCR类别
 struct OCRCategory: Codable {
-    let name: String
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "name"
     let confidence: Double
+    let source: String?  // ✅ 新增：后端可能返回来源（如 "inferred"）
+    
+    // 兼容性：提供 name 计算属性
+    var name: String {
+        return value
+    }
 }
 
 /// OCR解析数据

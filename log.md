@@ -5431,3 +5431,465 @@ struct ContentView: View {
 
 ---
 
+
+---
+
+## 2025-10-31 实施：前端优先解析策略（Frontend-first Parsing）
+
+### 实施内容
+
+基于账单样本分析，实施了"前端优先 + 后端兜底"的解析策略，针对高频账单类型（特别是微信支付）进行优化。
+
+### 新创建的文件
+
+1. **`ReceiptParserProtocol.swift`**
+   - 解析器协议定义
+   - 定义了`parse(_:)`、`canParse(_:)`和`name`属性
+
+2. **`ReceiptTypeDetector.swift`**
+   - 账单类型识别器
+   - 支持识别：微信支付标准账单、微信支付退款账单、支付宝标准账单、通用账单
+   - 使用关键词匹配和置信度评分
+
+3. **`WeChatPayReceiptParser.swift`**
+   - 微信支付专用解析器
+   - **金额解析**：优先匹配负号开头格式（"-9.90"），支持¥符号和纯数字
+   - **商户名称优先级策略**：
+     - 优先级1：门店名（包含"-"和"店"的短名称，如"RSE-上海中山龙之梦店"）
+     - 优先级2：品牌名（短名称，2-30字符，如"luckin coffee"、"滴滴出行"）
+     - 优先级3：公司名（包含"有限公司"的长名称）
+   - **日期时间解析**：支持多种格式（yyyy/MM/dd HH:mm:ss, yyyy-MM-dd HH:mm:ss, MM/dd HH:mm等），退款账单使用退款时间
+   - **支付方式解析**：支持银行名称识别（ICBC、CMB等），区分信用卡和借记卡，返回格式如"工商银行信用卡"
+   - **类别推断**：基于商户名称和商品信息智能推断（餐饮、交通、购物、娱乐等）
+   - **置信度计算**：金额40分、商户30分、日期15分、支付方式10分、类别5分
+
+4. **`GenericReceiptParser.swift`**
+   - 通用解析器（兜底方案）
+   - 使用原有的`PaymentReceiptParser`逻辑
+
+5. **`ReceiptParserRouter.swift`**
+   - 解析器路由管理器
+   - 识别账单类型并路由到对应的解析器
+   - **转换函数**：`convertToOCRProcessResult(_:rawText:)`将前端解析结果转换为`OCRProcessResult`格式
+
+### 修改的文件
+
+**`AutoRecognitionViewModel.swift`**
+- 在`performRealRecognition()`中集成前端优先解析策略
+- 流程：
+  1. 先尝试前端解析（`ReceiptParserRouter.shared.parseReceipt()`）
+  2. 如果前端解析成功且置信度≥0.8，直接使用前端结果
+  3. 否则调用后端API作为兜底（`OCRAPIService.shared.autoProcessOCRText()`）
+
+### 关键特性
+
+✅ **前端优先策略**：高频账单类型（微信支付）直接在前端解析，减少网络请求  
+✅ **商户名称优先级**：门店名 > 品牌名 > 公司名，确保提取最准确的商户信息  
+✅ **退款识别**：自动识别退款账单并使用退款时间  
+✅ **支付方式优化**：支持银行名称识别，区分信用卡和借记卡  
+✅ **向后兼容**：后端API仍然作为兜底，确保可靠性  
+✅ **确认界面逻辑保持不变**：所有识别失败或置信度低的情况，都会显示确认界面
+
+### 预期效果
+
+- ✅ 微信支付账单的解析准确度显著提升
+- ✅ 商户名称提取更准确（优先选择门店名而非公司全称）
+- ✅ 退款账单正确处理（使用退款时间）
+- ✅ 支付方式识别更详细（包含银行名称）
+- ✅ 减少后端API调用（高频账单类型直接前端解析）
+
+### 测试建议
+
+使用提供的5个账单样本进行测试：
+1. Luckin Coffee（瑞幸咖啡）
+2. JD Appliances refund（京东电器退款）
+3. JD Appliances payment（京东电器支付）
+4. Didi Chuxing（滴滴出行）
+5. RSE Restaurant（江边城外餐厅）
+
+---
+
+
+---
+
+## 2025-11-03 修复：OCR模型字段与后端不匹配
+
+### 问题描述
+
+用户报告前端解码错误：
+```
+decodingError(Swift.DecodingError.keyNotFound(CodingKeys(stringValue: "type", intValue: nil)...
+```
+
+后端返回 200 成功，但前端无法解析 `paymentMethod` 字段。
+
+### 问题分析
+
+这是一个**前端问题**。前端模型定义与后端返回的数据结构不匹配。
+
+**后端返回的数据结构**：
+```json
+{
+  "paymentMethod": {
+    "value": "其他",
+    "confidence": 0.1,
+    "originalText": "其他"
+  },
+  "category": {
+    "value": "其他",
+    "confidence": 0.8,
+    "source": "inferred"
+  }
+}
+```
+
+**前端期望的数据结构（旧版本）**：
+```swift
+struct OCRPaymentMethod: Codable {
+    let type: String        // ❌ 后端用的是 "value"
+    let confidence: Double
+}
+
+struct OCRCategory: Codable {
+    let name: String        // ❌ 后端用的是 "value"
+    let confidence: Double
+}
+```
+
+### 修复内容
+
+**文件1**: `ExpenseTracker/Features/AutoRecognition/Models/OCRModels.swift`
+
+更新了以下结构体以匹配后端数据格式：
+
+1. **`OCRMerchant`**
+```swift
+struct OCRMerchant: Codable {
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "name"
+    let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+    
+    // 兼容性：提供 name 计算属性
+    var name: String {
+        return value
+    }
+}
+```
+
+2. **`OCRAmount`**
+```swift
+struct OCRAmount: Codable {
+    let value: Double
+    let currency: String?  // ✅ 修改为可选：后端可能不返回
+    let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+}
+```
+
+3. **`OCRDate`**
+```swift
+struct OCRDate: Codable {
+    let value: String
+    let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+}
+```
+
+4. **`OCRPaymentMethod`**
+```swift
+struct OCRPaymentMethod: Codable {
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "type"
+    let confidence: Double
+    let originalText: String?  // ✅ 新增：后端可能返回原始文本
+    
+    // 兼容性：提供 type 计算属性
+    var type: String {
+        return value
+    }
+}
+```
+
+5. **`OCRCategory`**
+```swift
+struct OCRCategory: Codable {
+    let value: String  // ✅ 修改：后端使用 "value" 而不是 "name"
+    let confidence: Double
+    let source: String?  // ✅ 新增：后端可能返回来源（如 "inferred"）
+    
+    // 兼容性：提供 name 计算属性
+    var name: String {
+        return value
+    }
+}
+```
+
+**文件2**: `ExpenseTracker/Features/AutoRecognition/Services/ReceiptParserRouter.swift`
+
+更新了 `convertToOCRProcessResult` 方法中的初始化调用：
+```swift
+// 修改前
+OCRMerchant(name: $0, confidence: parsedData.confidence)
+OCRPaymentMethod(type: $0, confidence: parsedData.confidence)
+OCRCategory(name: parsedData.category, confidence: parsedData.confidence)
+
+// 修改后
+OCRMerchant(value: $0, confidence: parsedData.confidence, originalText: nil)
+OCRPaymentMethod(value: $0, confidence: parsedData.confidence, originalText: nil)
+OCRCategory(value: parsedData.category, confidence: parsedData.confidence, source: nil)
+```
+
+### 修改文件清单
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `OCRModels.swift` | 更新5个结构体字段名，添加可选字段，提供兼容性计算属性 | ✅ |
+| `ReceiptParserRouter.swift` | 更新初始化调用以使用新的字段名 | ✅ |
+
+### 预期效果
+
+- ✅ 前端可以正确解析后端返回的 OCR 数据
+- ✅ 通过计算属性保持向后兼容性
+- ✅ 支持后端新增的 `originalText` 和 `source` 字段
+- ✅ `currency` 字段改为可选，适应后端可能不返回的情况
+
+---
+
+
+### 补充修复
+
+**文件3**: `ExpenseTracker/Features/AutoRecognition/Services/OCRAPIService.swift`
+
+修复了 `processImage` 方法中的模拟数据初始化：
+```swift
+// 修改前
+let mockMerchant = OCRMerchant(name: "星巴克", confidence: 0.95)
+let mockPaymentMethod = OCRPaymentMethod(type: "支付宝", confidence: 0.85)
+let mockCategory = OCRCategory(name: "餐饮", confidence: 0.8)
+
+// 修改后
+let mockMerchant = OCRMerchant(value: "星巴克", confidence: 0.95, originalText: nil)
+let mockPaymentMethod = OCRPaymentMethod(value: "支付宝", confidence: 0.85, originalText: nil)
+let mockCategory = OCRCategory(value: "餐饮", confidence: 0.8, source: nil)
+```
+
+### 完整修改清单
+
+| 文件 | 修改内容 | 状态 |
+|------|---------|------|
+| `OCRModels.swift` | 更新5个结构体字段名，添加可选字段，提供兼容性计算属性 | ✅ |
+| `ReceiptParserRouter.swift` | 更新初始化调用以使用新的字段名 | ✅ |
+| `OCRAPIService.swift` | 修复模拟数据初始化调用 | ✅ |
+
+### 验证结果
+
+- ✅ 无编译错误
+- ✅ 所有结构体已更新
+- ✅ 所有初始化调用已修复
+- ✅ 向后兼容性已保留（通过计算属性）
+
+---
+
+
+---
+
+## 2025-11-03 修复：Xcode Bundle Identifier 配置问题
+
+### 问题描述
+
+用户报告 Xcode 编译错误：
+1. Bundle Identifier `test.ExpenseTracker` 无法注册到开发团队
+2. Provisioning profile 已过期（Nov 3, 2025）
+
+### 问题类型
+
+这是 **Xcode 开发者账号和证书配置问题**，不是代码错误。
+
+### 问题原因
+
+1. **Bundle ID 冲突**：`test.ExpenseTracker` 可能已被其他开发者使用，或格式不符合规范
+2. **证书过期**：Provisioning profile 需要更新
+
+### 解决方案
+
+修改 Bundle Identifier 为更唯一的格式：
+
+**修改文件**: `ExpenseTracker.xcodeproj/project.pbxproj`
+
+```diff
+- PRODUCT_BUNDLE_IDENTIFIER = test.ExpenseTracker;
++ PRODUCT_BUNDLE_IDENTIFIER = com.kexin.ExpenseTracker;
+
+- PRODUCT_BUNDLE_IDENTIFIER = test.ExpenseTrackerTests;
++ PRODUCT_BUNDLE_IDENTIFIER = com.kexin.ExpenseTrackerTests;
+
+- PRODUCT_BUNDLE_IDENTIFIER = test.ExpenseTrackerUITests;
++ PRODUCT_BUNDLE_IDENTIFIER = com.kexin.ExpenseTrackerUITests;
+```
+
+### 后续步骤
+
+1. **重新打开 Xcode 项目**
+2. **Signing & Capabilities** 标签页
+   - 确保 **Automatically manage signing** 已勾选
+   - 选择正确的 **Team**（Apple ID）
+3. **Clean Build Folder** (⇧⌘K)
+4. **重新编译**
+
+### 替代方案
+
+如果只是测试代码，可以：
+- 使用 **iOS 模拟器**运行（无需证书）
+- 选择 iPhone 15 Simulator
+- 直接 ⌘R 运行
+
+---
+
+
+---
+
+## 2025-11-03 故障排查：快捷指令报错 "Expensetracker不存在"
+
+### 问题描述
+
+用户按照方案一配置快捷指令后，执行时报错："Expensetracker不存在"
+
+### 问题原因
+
+iOS 系统找不到能够处理 `expensetracker://` URL Scheme 的应用，因为：
+1. 应用还没有从 Xcode 安装到 iPhone 上（使用新的 Bundle ID：`com.kexin.ExpenseTracker`）
+2. 或者旧版本应用已被卸载
+
+### 解决方案
+
+1. **从 Xcode 安装应用到 iPhone**
+   - 连接 iPhone 到 Mac
+   - 配置签名（选择 Apple ID Team）
+   - ⌘R 运行应用
+   - 首次安装需要在 iPhone 设置中信任开发者
+
+2. **验证 URL Scheme**
+   - 在 Safari 中输入：`expensetracker://process-screenshot`
+   - 应该弹出"在 ExpenseTracker 中打开？"的提示
+
+3. **重新配置快捷指令**
+   - 删除旧的快捷指令（避免缓存）
+   - 重新创建快捷指令
+   - 重新配置背面轻点
+
+### 创建的文档
+
+- `真机安装指南.md`：详细的 Xcode 真机安装步骤
+- `快捷指令配置指南.md`：快捷指令配置方法（已存在，更新）
+
+### 关键配置
+
+| 项目 | 值 |
+|------|-----|
+| Bundle ID | `com.kexin.ExpenseTracker` |
+| URL Scheme | `expensetracker` |
+| 完整URL | `expensetracker://process-screenshot` |
+| 签名方式 | Automatically manage signing |
+| Team | Apple ID (Personal Team) |
+
+---
+
+
+---
+
+## 2025-11-03 故障排查：背面轻点无法触发快捷指令
+
+### 问题描述
+
+- ✅ 快捷指令单独运行正常（URL Scheme 工作正常）
+- ❌ 背面轻点三次无法触发快捷指令
+
+### 常见原因
+
+1. **背面轻点配置问题**
+   - 没有正确关联快捷指令
+   - 快捷指令在文件夹里或自动化标签下
+
+2. **系统缓存问题**
+   - 需要重启 iPhone
+   - 需要重新配置背面轻点
+
+3. **快捷指令配置问题**
+   - 快捷指令没有正确命名
+   - 快捷指令内容不完整
+
+4. **测试方式问题**
+   - 手机平放在桌面（应该竖直握持）
+   - 力度不对或节奏不对
+   - 手机锁屏状态
+
+### 排查步骤
+
+1. **检查背面轻点基础配置**
+   ```
+   设置 → 辅助功能 → 触控 → 背面轻点 → 轻点三下
+   应该显示：记账助手 OCR（或您的快捷指令名称）
+   ```
+
+2. **重新配置（推荐）**
+   ```
+   1. 取消当前背面轻点配置
+   2. 等待 2 秒
+   3. 重新选择快捷指令
+   4. 重启 iPhone
+   5. 测试
+   ```
+
+3. **诊断测试**
+   ```
+   方法 A: 先设置为"截屏"测试硬件是否正常
+   方法 B: 创建简单的"显示通知"快捷指令测试
+   ```
+
+4. **验证快捷指令位置**
+   ```
+   ✅ 必须在"我的快捷指令"主列表
+   ❌ 不能在文件夹里
+   ❌ 不能在自动化标签里
+   ```
+
+### 快速解决方案
+
+**最有效的方法（90%情况有效）：**
+
+```
+1. 设置 → 辅助功能 → 触控 → 背面轻点
+   → 轻点三下 → 改为"无"
+
+2. 重启 iPhone（长按电源键关机，等10秒，重启）
+
+3. 打开"快捷指令" App
+   → 确认快捷指令在主列表
+   → 点击运行一次测试
+
+4. 设置 → 辅助功能 → 触控 → 背面轻点
+   → 轻点三下 → 重新选择快捷指令
+
+5. 测试：竖直握持手机，快速轻点背面三次
+```
+
+### 测试要点
+
+**正确的测试方式：**
+- ✅ 手机竖直握持
+- ✅ 手机已解锁
+- ✅ 2-3个手指快速连续轻点
+- ✅ 中等力度
+- ✅ 节奏：ta-ta-ta（快速）
+
+**错误的测试方式：**
+- ❌ 手机平放在桌面
+- ❌ 手机锁屏
+- ❌ 轻点太轻或太重
+- ❌ 节奏太慢
+
+### 创建的文档
+
+- `背面轻点故障排查.md`：详细的故障排查指南
+
+---
+
